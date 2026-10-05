@@ -4,85 +4,174 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistem Pengurusan Kad Minyak - Hospital Kemaman</title>
-  <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+  <!-- Bootstrap 5 CSS & FontAwesome Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .navbar-custom { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); }
+    .card { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .table-custom thead { background-color: #f1f5f9; color: #334155; }
+    .stat-card { border-left: 4px solid #2563eb; }
+  </style>
 </head>
-<body class="bg-slate-100 min-h-screen p-4 md:p-8">
-  <div class="max-w-6xl mx-auto">
-    <!-- Header -->
-    <header class="bg-blue-900 text-white p-6 rounded-lg shadow-lg mb-6 flex flex-col md:flex-row justify-between items-center">
-      <div>
-        <h1 class="text-2xl font-bold">HOSPITAL KEMAMAN</h1>
-        <p class="text-blue-200 text-sm">Sistem Pengurusan & Rekod Transaksi Kad Minyak</p>
-      </div>
-      <button onclick="loadData()" class="mt-4 md:mt-0 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-md font-semibold transition">
-        🔄 Muat Semula Data
-      </button>
-    </header>
+<body>
 
-    <!-- Status Loading -->
-    <div id="loading" class="text-center py-10">
-      <p class="text-gray-600 font-medium">Sedang memuatkan pangkalan data...</p>
+  <!-- Header / Navigation -->
+  <nav class="navbar navbar-dark navbar-custom py-3 shadow-sm mb-4">
+    <div class="container-fluid px-4">
+      <div class="d-flex align-items-center">
+        <i class="fa-solid fa-hospital text-white fs-2 me-3"></i>
+        <div>
+          <h4 class="text-white mb-0 font-weight-bold">HOSPITAL KEMAMAN</h4>
+          <small class="text-light opacity-75">Sistem Pengurusan & Rekod Transaksi Kad Minyak</small>
+        </div>
+      </div>
+      <button onclick="loadData()" class="btn btn-outline-light btn-sm rounded-pill px-3 mt-2 mt-sm-0">
+        <i class="fa-solid fa-rotate me-1"></i> Muat Semula Data
+      </button>
+    </div>
+  </nav>
+
+  <div class="container-fluid px-4">
+
+    <!-- Indicator Loading -->
+    <div id="loading" class="text-center py-5">
+      <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+      <p class="text-muted font-weight-medium">Sedang memuatkan pangkalan data...</p>
     </div>
 
-    <!-- Content Tabs Area -->
-    <div id="content" class="hidden space-y-8">
-      <!-- Section: Rekod Transaksi -->
-      <section class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">⛽ Rekod Transaksi Minyak Terkini</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm" id="table-Rekod_Transaksi"></table>
-        </div>
-      </section>
+    <!-- Main Content Area -->
+    <div id="content" class="d-none">
 
-      <!-- Section: Kad Minyak -->
-      <section class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">💳 Senarai Kad Minyak</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm" id="table-Kad_Minyak"></table>
+      <!-- Summary KPI Cards -->
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <div class="card stat-card p-3">
+            <div class="text-muted small">JUMLAH TRANSAKSI</div>
+            <h3 class="mb-0 fw-bold text-dark" id="total-transaksi">0</h3>
+          </div>
         </div>
-      </section>
+        <div class="col-md-4">
+          <div class="card stat-card p-3" style="border-left-color: #10b981;">
+            <div class="text-muted small">JUMLAH PERBELANJAAN (RM)</div>
+            <h3 class="mb-0 fw-bold text-success" id="total-perbelanjaan">RM 0.00</h3>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card stat-card p-3" style="border-left-color: #f59e0b;">
+            <div class="text-muted small">KAD MINYAK BERDAFTAR</div>
+            <h3 class="mb-0 fw-bold text-warning" id="total-kad">0</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table: Rekod Transaksi Minyak -->
+      <div class="card mb-4">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 fw-bold text-dark"><i class="fa-solid fa-gas-pump text-danger me-2"></i>Rekod Transaksi Minyak Terkini</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 table-custom" id="table-Rekod_Transaksi"></table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table: Kad Minyak -->
+      <div class="card mb-4">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0 fw-bold text-dark"><i class="fa-solid fa-credit-card text-primary me-2"></i>Senarai Kad Minyak</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 table-custom" id="table-Kad_Minyak"></table>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <script>
-    // GANTIKAN URL DI BAWAH DENGAN GOOGLE APPS SCRIPT WEB APP URL ANDA
+    // GANTIKAN DENGAN WEB APP URL ANDA DARI GOOGLE APPS SCRIPT
     const API_URL = "https://script.google.com/macros/s/AKfycbwnmB-Cb8Frt6zg7zESQcHhXmnGe0hzu8OQO5SSKe3yl8kq58jh_piZ91T_KTG7pFlFwQ/exec";
 
     async function loadData() {
-      document.getElementById('loading').classList.remove('hidden');
-      document.getElementById('content').classList.add('hidden');
+      document.getElementById('loading').classList.remove('d-none');
+      document.getElementById('content').classList.add('d-none');
 
       try {
         const response = await fetch(API_URL);
         const data = await response.json();
-        
-        renderTable("table-Rekod_Transaksi", data["Rekod_Transaksi"]);
-        renderTable("table-Kad_Minyak", data["Kad_Minyak"]);
 
-        document.getElementById('loading').classList.add('hidden');
-        document.getElementById('content').classList.remove('hidden');
+        // Kemaskini KPI Cards
+        calculateStats(data);
+
+        // Render Jadual
+        renderTable("table-Rekod_Transaksi", data["Rekod_Transaksi"], true);
+        renderTable("table-Kad_Minyak", data["Kad_Minyak"], false);
+
+        document.getElementById('loading').classList.add('d-none');
+        document.getElementById('content').classList.remove('d-none');
       } catch (err) {
-        alert("Gagal memuatkan data. Pastikan URL API adalah betul dan telah di-deploy dengan kebenaran 'Anyone'.");
+        alert("Gagal memuatkan data. Sila semak URL API atau pastikan kelulusan 'Anyone' di penetapan Apps Script.");
         console.error(err);
       }
     }
 
-    function renderTable(tableId, gridData) {
+    function calculateStats(data) {
+      const transaksi = data["Rekod_Transaksi"] || [];
+      const kad = data["Kad_Minyak"] || [];
+
+      document.getElementById('total-transaksi').innerText = Math.max(0, transaksi.length - 1);
+      document.getElementById('total-kad').innerText = Math.max(0, kad.length - 1);
+
+      let totalRM = 0;
+      for (let i = 1; i < transaksi.length; i++) {
+        let val = parseFloat(transaksi[i][5]) || 0;
+        totalRM += val;
+      }
+      document.getElementById('total-perbelanjaan').innerText = "RM " + totalRM.toFixed(2);
+    }
+
+    function formatDate(rawDate) {
+      if (!rawDate) return "-";
+      let d = new Date(rawDate);
+      if (isNaN(d.getTime())) return rawDate;
+      return d.toISOString().split('T')[0];
+    }
+
+    function renderTable(tableId, gridData, isTransaksi) {
       const table = document.getElementById(tableId);
       table.innerHTML = "";
 
       if (!gridData || gridData.length === 0) return;
 
       // Header
-      let thead = `<thead class="bg-slate-100 text-gray-700 font-semibold"><tr>`;
-      gridData[0].forEach(col => thead += `<th class="p-3 border-b">${col}</th>`);
+      let thead = `<thead><tr>`;
+      gridData[0].forEach(col => thead += `<th class="py-3 px-3">${col}</th>`);
       thead += `</tr></thead>`;
 
       // Body
       let tbody = `<tbody>`;
       for (let i = 1; i < gridData.length; i++) {
-        tbody += `<tr class="border-b hover:bg-slate-50">`;
-        gridData[i].forEach(cell => tbody += `<td class="p-3">${cell}</td>`);
+        tbody += `<tr>`;
+        gridData[i].forEach((cell, idx) => {
+          let content = cell;
+          
+          if (isTransaksi && idx === 1) {
+            content = `<span class="badge bg-light text-dark border">${formatDate(cell)}</span>`;
+          }
+          else if (idx === 2 && isTransaksi) {
+            content = `<span class="badge bg-dark">${cell}</span>`;
+          }
+          else if ((isTransaksi && idx === 5) || (!isTransaksi && (idx === 3 || idx === 4))) {
+            content = "RM " + (parseFloat(cell) || 0).toFixed(2);
+          }
+
+          tbody += `<td class="px-3">${content}</td>`;
+        });
         tbody += `</tr>`;
       }
       tbody += `</tbody>`;
@@ -90,7 +179,6 @@
       table.innerHTML = thead + tbody;
     }
 
-    // Auto-load bila buka web
     loadData();
   </script>
 </body>
