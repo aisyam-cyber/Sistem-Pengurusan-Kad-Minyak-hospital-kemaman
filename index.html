@@ -7,209 +7,287 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { font-family: system-ui, -apple-system, sans-serif; }
-    #loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; align-items: center; justify-content: center; }
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+    .sidebar-gradient { background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); }
+    #loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.75); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+<body class="bg-slate-900 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white">
 
   <!-- OVERLAY LOADING -->
   <div id="loadingOverlay" class="flex flex-col items-center">
-    <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600 mb-3"></div>
-    <p id="loadingText" class="text-white font-medium text-sm">Memproses data...</p>
+    <div class="relative flex items-center justify-center mb-4">
+      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+      <i class="fa-solid fa-gas-pump text-white text-xl absolute"></i>
+    </div>
+    <p id="loadingText" class="text-white font-medium text-sm tracking-wide">Memproses data pangkalan data...</p>
   </div>
 
   <!-- TOAST NOTIFICATION -->
-  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-xs w-full"></div>
+  <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full"></div>
 
   <!-- SECTION: LOG MASUK -->
-  <section id="loginSection" class="flex-1 flex items-center justify-center p-4 bg-slate-900">
-    <div class="max-w-sm w-full bg-white p-6 rounded-2xl shadow-xl">
-      <div class="text-center mb-6">
-        <i class="fa-solid fa-gas-pump text-4xl text-blue-600 mb-2"></i>
-        <h1 class="text-xl font-bold text-slate-900">KAD MINYAK KENDERAAN</h1>
-        <p class="text-xs text-blue-600 font-semibold uppercase">Hospital Kemaman</p>
+  <section id="loginSection" class="flex-1 flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-black">
+    <div class="max-w-md w-full glass-card p-8 rounded-3xl shadow-2xl border border-white/20 relative overflow-hidden">
+      <div class="absolute -right-10 -top-10 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
+      
+      <div class="text-center mb-8 relative">
+        <div class="inline-flex p-4 rounded-2xl bg-blue-600/10 text-blue-600 mb-3 border border-blue-500/20 shadow-inner">
+          <i class="fa-solid fa-gas-pump text-3xl"></i>
+        </div>
+        <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">SYSTEM KAD MINYAK</h1>
+        <p class="text-xs font-bold tracking-widest text-blue-600 uppercase mt-1">Hospital Kemaman</p>
       </div>
-      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">ID Pemandu / Penyelia</label>
-          <input type="text" id="loginId" required placeholder="Contoh: DRV5469" class="w-full p-2.5 bg-slate-50 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">ID Pemandu / Penyelia</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400"><i class="fa-solid fa-id-card"></i></span>
+            <input type="text" id="loginId" required placeholder="Contoh: DRV5469" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+          </div>
         </div>
+
         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">PIN 4-Digit</label>
-          <input type="password" id="loginPin" maxlength="6" required placeholder="••••" class="w-full p-2.5 bg-slate-50 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">PIN 4-Digit</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400"><i class="fa-solid fa-lock"></i></span>
+            <input type="password" id="loginPin" maxlength="6" required placeholder="••••" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+          </div>
         </div>
-        <button type="submit" id="loginBtn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-sm transition">LOG MASUK</button>
+
+        <button type="submit" id="loginBtn" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-blue-500/25 transition active:scale-[0.99] flex items-center justify-center gap-2">
+          <span>LOG MASUK</span>
+          <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+        </button>
       </form>
     </div>
   </section>
 
   <!-- SECTION: APLIKASI UTAMA -->
-  <div id="appSection" class="hidden flex-1 flex flex-col">
-    <header class="bg-slate-900 text-white p-3 shadow-md flex items-center justify-between sticky top-0 z-40">
-      <div class="flex items-center gap-2">
-        <i class="fa-solid fa-gas-pump text-blue-400 text-xl"></i>
-        <span class="font-bold text-sm">HOSPITAL KEMAMAN</span>
-      </div>
+  <div id="appSection" class="hidden flex-1 flex flex-col bg-slate-100">
+    
+    <!-- HEADER -->
+    <header class="bg-slate-900 border-b border-slate-800 text-white px-6 py-3.5 shadow-md flex items-center justify-between sticky top-0 z-40">
       <div class="flex items-center gap-3">
-        <span id="navUserName" class="text-xs font-semibold hidden sm:inline">Nama Pengguna</span>
-        <button onclick="handleLogout()" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold">Keluar</button>
+        <div class="w-9 h-9 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+          <i class="fa-solid fa-hospital text-lg"></i>
+        </div>
+        <div>
+          <h2 class="font-extrabold text-sm tracking-tight leading-none text-white">HOSPITAL KEMAMAN</h2>
+          <span class="text-[10px] font-semibold text-blue-400 tracking-wider">SISTEM KAD MINYAK</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="text-right hidden sm:block">
+          <p id="navUserName" class="text-xs font-bold text-slate-200">Nama Pengguna</p>
+          <span class="text-[10px] text-slate-400 font-mono">Pemandu Bertugas</span>
+        </div>
+        <button onclick="handleLogout()" class="px-3.5 py-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Keluar</span>
+        </button>
       </div>
     </header>
 
-    <div class="flex-1 flex flex-col md:flex-row max-w-7xl w-full mx-auto">
-      <!-- NAVIGASI -->
-      <aside class="bg-slate-800 text-slate-300 w-full md:w-56 p-2 flex md:flex-col gap-1 overflow-x-auto">
-        <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn flex-1 md:w-full p-2.5 rounded-lg text-xs font-semibold text-left flex items-center gap-2 bg-blue-600 text-white">
-          <i class="fa-solid fa-chart-line w-4"></i> Dashboard
+    <div class="flex-1 flex flex-col md:flex-row max-w-7xl w-full mx-auto p-4 md:p-6 gap-6">
+      
+      <!-- NAVIGASI SIDEBAR -->
+      <aside class="sidebar-gradient text-slate-300 w-full md:w-60 p-3 rounded-2xl border border-slate-800 flex md:flex-col gap-1.5 overflow-x-auto shadow-xl h-fit">
+        <div class="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 hidden md:block">Menu Utama</div>
+        <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn flex-1 md:w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-white bg-blue-600 shadow-md shadow-blue-600/30">
+          <i class="fa-solid fa-chart-pie text-sm w-4"></i> Dashboard
         </button>
-        <button onclick="switchView('ambil')" id="nav-ambil" class="nav-btn flex-1 md:w-full p-2.5 rounded-lg text-xs font-semibold text-left flex items-center gap-2 hover:bg-slate-700">
-          <i class="fa-solid fa-id-card w-4"></i> Ambil Kad
+        <button onclick="switchView('ambil')" id="nav-ambil" class="nav-btn flex-1 md:w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+          <i class="fa-solid fa-id-card text-sm w-4"></i> Ambil Kad
         </button>
-        <button onclick="switchView('hantar')" id="nav-hantar" class="nav-btn flex-1 md:w-full p-2.5 rounded-lg text-xs font-semibold text-left flex items-center gap-2 hover:bg-slate-700">
-          <i class="fa-solid fa-rotate-left w-4"></i> Hantar Kad
+        <button onclick="switchView('hantar')" id="nav-hantar" class="nav-btn flex-1 md:w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+          <i class="fa-solid fa-rotate-left text-sm w-4"></i> Hantar Kad
         </button>
-        <button onclick="switchView('rekod')" id="nav-rekod" class="nav-btn flex-1 md:w-full p-2.5 rounded-lg text-xs font-semibold text-left flex items-center gap-2 hover:bg-slate-700">
-          <i class="fa-solid fa-gas-pump w-4"></i> Rekod Minyak
+        <button onclick="switchView('rekod')" id="nav-rekod" class="nav-btn flex-1 md:w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+          <i class="fa-solid fa-gas-pump text-sm w-4"></i> Rekod Minyak
         </button>
-        <button onclick="switchView('sejarah')" id="nav-sejarah" class="nav-btn flex-1 md:w-full p-2.5 rounded-lg text-xs font-semibold text-left flex items-center gap-2 hover:bg-slate-700">
-          <i class="fa-solid fa-history w-4"></i> Sejarah
+        <button onclick="switchView('sejarah')" id="nav-sejarah" class="nav-btn flex-1 md:w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+          <i class="fa-solid fa-clock-rotate-left text-sm w-4"></i> Sejarah
         </button>
       </aside>
 
       <!-- KANDUNGAN UTAMA -->
-      <main class="flex-1 p-4 bg-slate-100 overflow-y-auto">
+      <main class="flex-1 space-y-6">
 
         <!-- VIEW: DASHBOARD -->
-        <div id="view-dashboard" class="view-panel space-y-4">
-          <div class="bg-blue-600 text-white p-4 rounded-xl">
-            <h2 id="dashWelcome" class="text-lg font-bold">Selamat Datang</h2>
-            <p id="dashSub" class="text-xs text-blue-100">ID: -</p>
+        <div id="view-dashboard" class="view-panel space-y-6">
+          <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white p-6 rounded-3xl shadow-xl shadow-blue-500/10 border border-blue-500/20 relative overflow-hidden">
+            <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+            <h2 id="dashWelcome" class="text-xl font-extrabold tracking-tight">Selamat Datang</h2>
+            <p id="dashSub" class="text-xs text-blue-100 font-medium mt-1">ID: -</p>
           </div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div class="bg-white p-3 rounded-lg border text-center">
-              <p class="text-[10px] font-bold text-slate-400 uppercase">Kad Simpanan</p>
-              <h3 id="statSimpanan" class="text-xl font-bold text-slate-800">0</h3>
+
+          <!-- INDIKATOR KPIS -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Kad Simpanan</span>
+                <span class="p-2 bg-emerald-50 text-emerald-600 rounded-xl"><i class="fa-solid fa-box-archive text-sm"></i></span>
+              </div>
+              <h3 id="statSimpanan" class="text-2xl font-black text-slate-800">0</h3>
             </div>
-            <div class="bg-white p-3 rounded-lg border text-center">
-              <p class="text-[10px] font-bold text-slate-400 uppercase">Kad Digunakan</p>
-              <h3 id="statDigunakan" class="text-xl font-bold text-slate-800">0</h3>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Kad Digunakan</span>
+                <span class="p-2 bg-amber-50 text-amber-600 rounded-xl"><i class="fa-solid fa-hand-holding-hand text-sm"></i></span>
+              </div>
+              <h3 id="statDigunakan" class="text-2xl font-black text-slate-800">0</h3>
             </div>
-            <div class="bg-white p-3 rounded-lg border text-center">
-              <p class="text-[10px] font-bold text-slate-400 uppercase">Kenderaan</p>
-              <h3 id="statKenderaan" class="text-xl font-bold text-slate-800">0</h3>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Kenderaan</span>
+                <span class="p-2 bg-blue-50 text-blue-600 rounded-xl"><i class="fa-solid fa-truck-medical text-sm"></i></span>
+              </div>
+              <h3 id="statKenderaan" class="text-2xl font-black text-slate-800">0</h3>
             </div>
-            <div class="bg-white p-3 rounded-lg border text-center">
-              <p class="text-[10px] font-bold text-slate-400 uppercase">Isian Saya</p>
-              <h3 id="statTransaksi" class="text-xl font-bold text-slate-800">0</h3>
+
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Isian Saya</span>
+                <span class="p-2 bg-purple-50 text-purple-600 rounded-xl"><i class="fa-solid fa-receipt text-sm"></i></span>
+              </div>
+              <h3 id="statTransaksi" class="text-2xl font-black text-slate-800">0</h3>
             </div>
           </div>
-          <div class="bg-white p-4 rounded-xl border space-y-2">
-            <h3 class="font-bold text-xs uppercase text-slate-700">Kad Minyak Belum Dipulangkan</h3>
+
+          <!-- JADUAL OUTSTANDING -->
+          <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 class="font-bold text-xs uppercase tracking-wider text-slate-700 flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-amber-500"></i>
+                Kad Minyak Belum Dipulangkan
+              </h3>
+            </div>
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs">
-                <thead><tr class="bg-slate-800 text-white"><th class="p-2">Plat</th><th class="p-2">Pemandu</th><th class="p-2">Kad</th><th class="p-2">Masa Ambil</th></tr></thead>
-                <tbody id="outstandingTableBody" class="divide-y"><tr><td colspan="4" class="p-3 text-center text-slate-400">Memuatkan...</td></tr></tbody>
+                <thead>
+                  <tr class="bg-slate-900 text-white uppercase font-semibold">
+                    <th class="p-3 rounded-l-xl">No. Plat</th>
+                    <th class="p-3">Pemandu</th>
+                    <th class="p-3">Maklumat Kad</th>
+                    <th class="p-3 rounded-r-xl">Tarikh / Masa Ambil</th>
+                  </tr>
+                </thead>
+                <tbody id="outstandingTableBody" class="divide-y divide-slate-100">
+                  <tr><td colspan="4" class="p-4 text-center text-slate-400">Memuatkan data...</td></tr>
+                </tbody>
               </table>
             </div>
           </div>
         </div>
 
         <!-- VIEW: AMBIL KAD -->
-        <div id="view-ambil" class="view-panel hidden max-w-lg mx-auto bg-white p-4 rounded-xl border">
-          <h3 class="font-bold text-sm mb-4 text-slate-800">Borang Ambil Kad Minyak</h3>
-          <form onsubmit="submitAmbilKad(event)" class="space-y-3 text-xs">
+        <div id="view-ambil" class="view-panel hidden max-w-xl mx-auto bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+          <h3 class="font-extrabold text-base mb-6 text-slate-800 flex items-center gap-2 border-b pb-3">
+            <i class="fa-solid fa-id-card text-blue-600"></i> Borang Ambil Kad Minyak
+          </h3>
+          <form onsubmit="submitAmbilKad(event)" class="space-y-4 text-xs">
             <div>
-              <label class="block font-bold mb-1">1. Pilih Kenderaan *</label>
-              <select id="ambilKenderaan" onchange="handleAmbilVehicleChange()" required class="w-full p-2 bg-slate-50 border rounded-lg outline-none"></select>
+              <label class="block font-bold text-slate-600 mb-1.5 uppercase">1. Pilih Kenderaan *</label>
+              <select id="ambilKenderaan" onchange="handleAmbilVehicleChange()" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none focus:ring-2 focus:ring-blue-500"></select>
             </div>
-            <div id="ambilLoanerGroup" class="hidden p-3 bg-amber-50 border border-amber-200 rounded-lg">
-              <label class="block font-bold text-amber-800 mb-1">No. Plat Kenderaan Loaner Radicare *</label>
-              <input type="text" id="ambilNoPlatLoaner" placeholder="Contoh: WXA 8899" class="w-full p-2 bg-white border rounded-lg font-bold uppercase outline-none">
-            </div>
-            <div>
-              <label class="block font-bold mb-1">2. Pilih Kad Minyak *</label>
-              <div id="ambilKadCheckboxGroup" class="p-2 bg-slate-50 border rounded-lg space-y-1"></div>
+            <div id="ambilLoanerGroup" class="hidden p-4 bg-amber-50/80 border border-amber-200 rounded-2xl space-y-1">
+              <label class="block font-bold text-amber-900 uppercase">No. Plat Kenderaan Loaner Radicare *</label>
+              <input type="text" id="ambilNoPlatLoaner" placeholder="Contoh: WXA 8899" class="w-full p-3 bg-white border border-amber-300 rounded-xl font-bold uppercase outline-none focus:ring-2 focus:ring-amber-500">
             </div>
             <div>
-              <label class="block font-bold mb-1">3. Penyelia Penyerah *</label>
-              <select id="ambilPenyelia" required class="w-full p-2 bg-slate-50 border rounded-lg outline-none"></select>
+              <label class="block font-bold text-slate-600 mb-1.5 uppercase">2. Pilih Kad Minyak Terikat *</label>
+              <div id="ambilKadCheckboxGroup" class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1 min-h-[60px]"></div>
             </div>
             <div>
-              <label class="block font-bold mb-1">Tujuan Penggunaan *</label>
-              <textarea id="ambilTujuan" rows="2" required placeholder="Tugasan rasmi..." class="w-full p-2 bg-slate-50 border rounded-lg outline-none"></textarea>
+              <label class="block font-bold text-slate-600 mb-1.5 uppercase">3. Pilih Penyelia Penyerah *</label>
+              <select id="ambilPenyelia" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none focus:ring-2 focus:ring-blue-500"></select>
             </div>
-            <button type="submit" id="btnSubmitAmbil" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg">DISAHKAN & AMBIL KAD</button>
+            <div>
+              <label class="block font-bold text-slate-600 mb-1.5 uppercase">Tujuan Penggunaan *</label>
+              <textarea id="ambilTujuan" rows="2" required placeholder="Sila nyatakan tujuan rasmi..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+            <button type="submit" id="btnSubmitAmbil" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 transition">DISAHKAN & AMBIL KAD</button>
           </form>
         </div>
 
         <!-- VIEW: HANTAR KAD -->
-        <div id="view-hantar" class="view-panel hidden max-w-lg mx-auto bg-white p-4 rounded-xl border">
-          <h3 class="font-bold text-sm mb-3 text-slate-800">Pemulangan Kad Minyak</h3>
-          <div id="hantarContainer" class="space-y-3 text-xs">Memuatkan...</div>
+        <div id="view-hantar" class="view-panel hidden max-w-xl mx-auto bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+          <h3 class="font-extrabold text-base mb-4 text-slate-800 flex items-center gap-2 border-b pb-3">
+            <i class="fa-solid fa-rotate-left text-amber-600"></i> Pemulangan Kad Minyak
+          </h3>
+          <div id="hantarContainer" class="space-y-4 text-xs">Memuatkan data...</div>
         </div>
 
         <!-- VIEW: REKOD MINYAK -->
-        <div id="view-rekod" class="view-panel hidden max-w-lg mx-auto bg-white p-4 rounded-xl border">
-          <h3 class="font-bold text-sm mb-4 text-slate-800">Borang Rekod Isian Minyak</h3>
-          <form onsubmit="submitRekodMinyak(event)" class="space-y-3 text-xs">
+        <div id="view-rekod" class="view-panel hidden max-w-xl mx-auto bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
+          <h3 class="font-extrabold text-base mb-6 text-slate-800 flex items-center gap-2 border-b pb-3">
+            <i class="fa-solid fa-gas-pump text-emerald-600"></i> Borang Rekod Isian Minyak
+          </h3>
+          <form onsubmit="submitRekodMinyak(event)" class="space-y-4 text-xs">
             <div>
-              <label class="block font-bold mb-1">1. Pilih Kenderaan *</label>
-              <select id="rekodKenderaan" onchange="handleRekodVehicleChange()" required class="w-full p-2 bg-slate-50 border rounded-lg outline-none"></select>
+              <label class="block font-bold text-slate-600 mb-1.5 uppercase">1. Pilih Kenderaan *</label>
+              <select id="rekodKenderaan" onchange="handleRekodVehicleChange()" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none focus:ring-2 focus:ring-blue-500"></select>
             </div>
-            <div id="rekodLoanerGroup" class="hidden p-3 bg-amber-50 border border-amber-200 rounded-lg">
-              <label class="block font-bold text-amber-800 mb-1">No. Plat Kenderaan Loaner Radicare *</label>
-              <input type="text" id="rekodNoPlatLoaner" placeholder="Contoh: WXA 8899" class="w-full p-2 bg-white border rounded-lg font-bold uppercase outline-none">
+            <div id="rekodLoanerGroup" class="hidden p-4 bg-amber-50/80 border border-amber-200 rounded-2xl space-y-1">
+              <label class="block font-bold text-amber-900 uppercase">No. Plat Kenderaan Loaner Radicare *</label>
+              <input type="text" id="rekodNoPlatLoaner" placeholder="Contoh: WXA 8899" class="w-full p-3 bg-white border border-amber-300 rounded-xl font-bold uppercase outline-none focus:ring-2 focus:ring-amber-500">
             </div>
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block font-bold mb-1">2. Pilih Kad *</label>
-                <select id="rekodKadId" required class="w-full p-2 bg-slate-50 border rounded-lg outline-none"></select>
+                <label class="block font-bold text-slate-600 mb-1.5 uppercase">2. Pilih Kad *</label>
+                <select id="rekodKadId" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none focus:ring-2 focus:ring-blue-500"></select>
               </div>
               <div>
-                <label class="block font-bold mb-1">Stesen Minyak *</label>
-                <input type="text" id="rekodNamaStesen" required placeholder="Petronas Kemaman" class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
+                <label class="block font-bold text-slate-600 mb-1.5 uppercase">Stesen Minyak *</label>
+                <input type="text" id="rekodNamaStesen" required placeholder="Petronas Kemaman" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none focus:ring-2 focus:ring-blue-500">
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block font-bold mb-1">Tarikh *</label>
-                <input type="date" id="rekodTarikh" required class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
+                <label class="block font-bold text-slate-600 mb-1.5 uppercase">Tarikh *</label>
+                <input type="date" id="rekodTarikh" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
               </div>
               <div>
-                <label class="block font-bold mb-1">Masa *</label>
-                <input type="time" id="rekodMasa" required class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
+                <label class="block font-bold text-slate-600 mb-1.5 uppercase">Masa *</label>
+                <input type="time" id="rekodMasa" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
               </div>
             </div>
             <div>
-              <label class="block font-bold mb-1">Odometer Semasa *</label>
-              <input type="number" id="rekodOdometer" required placeholder="125150" class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
+              <label class="block font-bold text-slate-600 mb-1.5 uppercase">Odometer Semasa *</label>
+              <input type="number" id="rekodOdometer" required placeholder="125150" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none">
             </div>
-            <div class="grid grid-cols-3 gap-2">
+            <div class="grid grid-cols-3 gap-3">
               <div>
-                <label class="block font-bold mb-1">Liter *</label>
-                <input type="number" step="0.01" id="rekodLiter" oninput="calcTotalRM()" required placeholder="0.00" class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
+                <label class="block font-bold text-slate-600 mb-1.5 uppercase">Liter *</label>
+                <input type="number" step="0.01" id="rekodLiter" oninput="calcTotalRM()" required placeholder="0.00" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
               </div>
               <div>
-                <label class="block font-bold mb-1">Harga/L *</label>
-                <input type="number" step="0.01" id="rekodHarga" oninput="calcTotalRM()" required placeholder="2.05" class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
+                <label class="block font-bold text-slate-600 mb-1.5 uppercase">Harga/L *</label>
+                <input type="number" step="0.01" id="rekodHarga" oninput="calcTotalRM()" required placeholder="2.05" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
               </div>
               <div>
-                <label class="block font-bold mb-1">Jumlah RM</label>
-                <input type="text" id="rekodTotalRM" readonly placeholder="0.00" class="w-full p-2 bg-slate-200 font-bold text-emerald-700 border rounded-lg outline-none">
+                <label class="block font-bold text-slate-600 mb-1.5 uppercase">Jumlah RM</label>
+                <input type="text" id="rekodTotalRM" readonly placeholder="0.00" class="w-full p-3 bg-slate-200 font-black text-emerald-700 border border-slate-300 rounded-xl outline-none">
               </div>
             </div>
-            <button type="submit" id="btnSubmitRekod" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg">SIMPAN REKOD ISIAN</button>
+            <button type="submit" id="btnSubmitRekod" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition">SIMPAN REKOD ISIAN</button>
           </form>
         </div>
 
         <!-- VIEW: SEJARAH -->
-        <div id="view-sejarah" class="view-panel hidden bg-white p-4 rounded-xl border space-y-3">
-          <h3 class="font-bold text-sm text-slate-800">Sejarah Transaksi Diri</h3>
+        <div id="view-sejarah" class="view-panel hidden bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+          <h3 class="font-extrabold text-base text-slate-800 border-b pb-3">Sejarah Transaksi Diri</h3>
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs">
-              <thead><tr class="bg-slate-800 text-white"><th class="p-2">Tarikh</th><th class="p-2">Plat</th><th class="p-2">Stesen</th><th class="p-2">Odometer</th><th class="p-2">Liter</th><th class="p-2">Jumlah</th></tr></thead>
-              <tbody id="sejarahTableBody" class="divide-y"><tr><td colspan="6" class="p-3 text-center text-slate-400">Memuatkan...</td></tr></tbody>
+              <thead><tr class="bg-slate-900 text-white uppercase"><th class="p-3">Tarikh</th><th class="p-3">Plat</th><th class="p-3">Stesen</th><th class="p-3">Odometer</th><th class="p-3">Liter</th><th class="p-3">Jumlah</th></tr></thead>
+              <tbody id="sejarahTableBody" class="divide-y divide-slate-100"><tr><td colspan="6" class="p-4 text-center text-slate-400">Memuatkan data...</td></tr></tbody>
             </table>
           </div>
         </div>
@@ -219,7 +297,7 @@
   </div>
 
   <script>
-    // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA DENGAN KHAS AKHIRAN /exec
+    // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
     const API_URL = "https://script.google.com/macros/s/AKfycbyruAEkfSPraxM9_QO3JTS4ZI6NhxW7LnaYAk8UGTmNcrayzYvd7-pKZUlXLcs-gtQHGg/exec";
 
     let currentUser = null;
@@ -245,7 +323,7 @@
     function showToast(msg, type = "success") {
       const container = document.getElementById("toastContainer");
       const toast = document.createElement("div");
-      toast.className = `${type === "success" ? "bg-emerald-600" : "bg-red-600"} text-white px-3 py-2 rounded-lg shadow-lg text-xs font-medium`;
+      toast.className = `${type === "success" ? "bg-emerald-600" : "bg-red-600"} text-white px-4 py-3 rounded-xl shadow-xl text-xs font-bold transition transform duration-300`;
       toast.innerText = msg;
       container.appendChild(toast);
       setTimeout(() => toast.remove(), 3500);
@@ -284,7 +362,7 @@
     }
 
     async function loadInitialAppData() {
-      toggleLoading(true, "Memuatkan data...");
+      toggleLoading(true, "Memuatkan pangkalan data...");
       try {
         const res = await callBackendApi("getInitialData", { idPemandu: currentUser.idPemandu });
         toggleLoading(false);
@@ -302,9 +380,9 @@
       const rekV = document.getElementById("rekodKenderaan");
       const ambP = document.getElementById("ambilPenyelia");
       
-      ambV.innerHTML = '<option value="">-- Pilih Kenderaan --</option>';
-      rekV.innerHTML = '<option value="">-- Pilih Kenderaan --</option>';
-      ambP.innerHTML = '<option value="">-- Pilih Penyelia --</option>';
+      ambV.innerHTML = '<option value="">-- Sila Pilih Kenderaan --</option>';
+      rekV.innerHTML = '<option value="">-- Sila Pilih Kenderaan --</option>';
+      ambP.innerHTML = '<option value="">-- Sila Pilih Penyelia --</option>';
 
       masterData.kenderaan.forEach(v => {
         const opt = `<option value="${v.ID_KENDERAAN}">${v.NO_PENDAFTARAN} - ${v.NAMA_KENDERAAN}</option>`;
@@ -330,9 +408,9 @@
       cards.forEach(kad => {
         const isUsed = String(kad.STATUS_KAD).toUpperCase() === "SEDANG DIGUNAKAN";
         grp.innerHTML += `
-          <label class="flex items-center gap-2 p-1.5 bg-white border rounded ${isUsed?'opacity-50':''}">
+          <label class="flex items-center gap-2 p-2 bg-white border rounded-xl ${isUsed?'opacity-50 cursor-not-allowed':''}">
             <input type="checkbox" name="ambilKadCb" value="${kad.ID_KAD}" ${isUsed?'disabled':''}>
-            <span>No. Kad: ${kad.NO_KAD_4_DIGIT} (${kad.PROVIDER}) - <b>${kad.STATUS_KAD}</b></span>
+            <span class="font-semibold text-xs">No. Kad: ${kad.NO_KAD_4_DIGIT} (${kad.PROVIDER}) - <b class="${isUsed?'text-red-600':'text-emerald-600'}">${kad.STATUS_KAD}</b></span>
           </label>`;
       });
     }
@@ -361,7 +439,7 @@
       e.preventDefault();
       const cbs = document.querySelectorAll('input[name="ambilKadCb"]:checked');
       const selected = Array.from(cbs).map(c => c.value);
-      if (!selected.length) return showToast("Sila pilih sekurang-kurangnya satu kad.", "error");
+      if (!selected.length) return showToast("Sila tanda sekurang-kurangnya satu kad.", "error");
 
       const payload = {
         idPemandu: currentUser.idPemandu,
@@ -372,7 +450,7 @@
         noPlatLoaner: document.getElementById("ambilNoPlatLoaner").value.trim()
       };
 
-      toggleLoading(true, "Menyimpan...");
+      toggleLoading(true, "Menyimpan transaksi...");
       try {
         const res = await callBackendApi("ambilKad", payload);
         toggleLoading(false);
@@ -407,20 +485,20 @@
 
     async function loadHantarCardList() {
       const container = document.getElementById("hantarContainer");
-      container.innerText = "Memuatkan...";
+      container.innerText = "Memuatkan data kad...";
       try {
         const res = await callBackendApi("getActiveCardsByDriver", { idPemandu: currentUser.idPemandu });
         if (res.success && res.data.length) {
           let opts = masterData.penyelia.map(p => `<option value="${p.ID_PEMANDU}">${p.NAMA_PEMANDU}</option>`).join("");
-          let cards = res.data.map(i => `<label class="flex items-center gap-2 p-2 bg-slate-50 border rounded"><input type="checkbox" name="hantarCb" value="${i.idKad}" checked><span>${i.noKad4Digit} (${i.noPendaftaran})</span></label>`).join("");
+          let cards = res.data.map(i => `<label class="flex items-center gap-2 p-3 bg-slate-50 border rounded-xl"><input type="checkbox" name="hantarCb" value="${i.idKad}" checked><span class="font-bold text-slate-800">${i.noKad4Digit} (${i.noPendaftaran})</span></label>`).join("");
           container.innerHTML = `
             <form onsubmit="submitHantarBatch(event)" class="space-y-3">
-              <div>${cards}</div>
-              <div><label class="block font-bold mb-1">Penyelia Penerima *</label><select id="hantarPenyelia" required class="w-full p-2 bg-slate-50 border rounded-lg">${opts}</select></div>
-              <div><label class="block font-bold mb-1">Odometer Pemulangan *</label><input type="number" id="hantarOdo" required class="w-full p-2 bg-slate-50 border rounded-lg"></div>
-              <button type="submit" class="w-full py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg">PULANGKAN KAD</button>
+              <div class="space-y-2">${cards}</div>
+              <div><label class="block font-bold mb-1 uppercase">Penyelia Penerima *</label><select id="hantarPenyelia" required class="w-full p-3 bg-slate-50 border rounded-xl outline-none">${opts}</select></div>
+              <div><label class="block font-bold mb-1 uppercase">Odometer Pemulangan *</label><input type="number" id="hantarOdo" required class="w-full p-3 bg-slate-50 border rounded-xl outline-none"></div>
+              <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-lg shadow-amber-500/20">PULANGKAN KAD</button>
             </form>`;
-        } else { container.innerHTML = '<p class="text-slate-400">Tiada kad aktif digunakan oleh anda.</p>'; }
+        } else { container.innerHTML = '<p class="text-slate-400 font-medium p-4 text-center">Tiada kad aktif digunakan oleh anda.</p>'; }
       } catch (err) { container.innerHTML = err.message; }
     }
 
@@ -434,7 +512,7 @@
         idPenyelia: document.getElementById("hantarPenyelia").value,
         odometer: document.getElementById("hantarOdo").value
       };
-      toggleLoading(true, "Memproses...");
+      toggleLoading(true, "Memproses pemulangan...");
       try {
         const res = await callBackendApi("hantarKadBatch", payload);
         toggleLoading(false);
@@ -445,18 +523,18 @@
 
     async function loadDriverHistory() {
       const tbody = document.getElementById("sejarahTableBody");
-      tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center text-slate-400">Memuatkan...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Memuatkan sejarah...</td></tr>';
       try {
         const res = await callBackendApi("getDriverHistory", { idPemandu: currentUser.idPemandu });
         if (res.success && res.data.length) {
           tbody.innerHTML = res.data.map(r => `
             <tr class="hover:bg-slate-50">
-              <td class="p-2">${r.TARIKH_ISI}</td><td class="p-2 font-bold">${r.NO_PENDAFTARAN}</td>
-              <td class="p-2">${r.NAMA_STESEN}</td><td class="p-2">${r.ODOMETER}</td>
-              <td class="p-2 text-blue-600 font-bold">${r.LITER} L</td><td class="p-2 text-emerald-600 font-bold">RM ${Number(r.JUMLAH_RM).toFixed(2)}</td>
+              <td class="p-3">${r.TARIKH_ISI}</td><td class="p-3 font-bold">${r.NO_PENDAFTARAN}</td>
+              <td class="p-3">${r.NAMA_STESEN}</td><td class="p-3 font-mono">${r.ODOMETER}</td>
+              <td class="p-3 text-blue-600 font-bold">${r.LITER} L</td><td class="p-3 text-emerald-600 font-bold">RM ${Number(r.JUMLAH_RM).toFixed(2)}</td>
             </tr>`).join("");
-        } else { tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center text-slate-400">Tiada sejarah.</td></tr>'; }
-      } catch (err) { tbody.innerHTML = `<tr><td colspan="6" class="p-3 text-center text-red-500">${err.message}</td></tr>`; }
+        } else { tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">Tiada sejarah rekod pengisian.</td></tr>'; }
+      } catch (err) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-500">${err.message}</td></tr>`; }
     }
 
     function renderStats(s) {
@@ -471,9 +549,9 @@
       const tbody = document.getElementById("outstandingTableBody");
       if (list && list.length) {
         tbody.innerHTML = list.map(i => `
-          <tr><td class="p-2 font-bold">${i.noPendaftaran}</td><td class="p-2 text-blue-600 font-bold">${i.namaPemandu}</td><td class="p-2">${i.noKad4Digit} (${i.provider})</td><td class="p-2">${i.tarikhAmbil}</td></tr>
+          <tr class="hover:bg-slate-50"><td class="p-3 font-bold text-slate-800">${i.noPendaftaran}</td><td class="p-3 text-blue-600 font-bold">${i.namaPemandu}</td><td class="p-3"><span class="px-2 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg border border-amber-200">${i.noKad4Digit} (${i.provider})</span></td><td class="p-3 text-slate-600">${i.tarikhAmbil}</td></tr>
         `).join("");
-      } else { tbody.innerHTML = '<tr><td colspan="4" class="p-3 text-center text-emerald-600 font-bold">Semua kad berada dalam simpanan.</td></tr>'; }
+      } else { tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-emerald-600 font-bold"><i class="fa-solid fa-circle-check me-1"></i> Semua kad berada dalam simpanan.</td></tr>'; }
     }
 
     function switchView(vName) {
