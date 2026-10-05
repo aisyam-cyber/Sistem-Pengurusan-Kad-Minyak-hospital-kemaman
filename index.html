@@ -2,562 +2,215 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sistem Pengurusan Kad Minyak - Hospital Kemaman</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Kad Minyak - Hospital Kemaman</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-    #loadingOverlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.7);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-    }
-    @media print {
-      body * { visibility: hidden; }
-      #printableReportArea, #printableReportArea * { visibility: visible; }
-      #printableReportArea { position: absolute; left: 0; top: 0; width: 100%; }
-      .no-print { display: none !important; }
-    }
+    body { font-family: system-ui, -apple-system, sans-serif; }
+    #loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); z-index: 9999; align-items: center; justify-content: center; }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- LOADING OVERLAY -->
+  <!-- OVERLAY LOADING -->
   <div id="loadingOverlay" class="flex flex-col items-center">
-    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
-    <p id="loadingText" class="text-white font-medium text-lg">Memproses data...</p>
+    <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-blue-600 mb-3"></div>
+    <p id="loadingText" class="text-white font-medium text-sm">Memproses data...</p>
   </div>
 
   <!-- TOAST NOTIFICATION -->
-  <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full"></div>
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-xs w-full"></div>
 
-  <!-- MODAL AMARAN ODOMETER -->
-  <div id="odoModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200">
-      <div class="flex items-center gap-3 text-amber-500 mb-4">
-        <i class="fa-solid fa-triangle-exclamation text-3xl"></i>
-        <h3 class="text-xl font-bold text-slate-800">Amaran Odometer</h3>
+  <!-- SECTION: LOG MASUK -->
+  <section id="loginSection" class="flex-1 flex items-center justify-center p-4 bg-slate-900">
+    <div class="max-w-sm w-full bg-white p-6 rounded-2xl shadow-xl">
+      <div class="text-center mb-6">
+        <i class="fa-solid fa-gas-pump text-4xl text-blue-600 mb-2"></i>
+        <h1 class="text-xl font-bold text-slate-900">KAD MINYAK KENDERAAN</h1>
+        <p class="text-xs text-blue-600 font-semibold uppercase">Hospital Kemaman</p>
       </div>
-      <p id="odoModalMessage" class="text-slate-600 mb-6 leading-relaxed"></p>
-      <div class="flex justify-end gap-3">
-        <button onclick="closeOdoModal(false)" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 font-medium">Batal / Semak</button>
-        <button id="odoConfirmBtn" onclick="closeOdoModal(true)" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-medium shadow-md">Teruskan Juga</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PAGE: LOGIN -->
-  <section id="loginSection" class="flex-1 flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
-    <div class="max-w-md w-full glass-card p-8 rounded-3xl shadow-2xl border border-white/20">
-      <div class="text-center mb-8">
-        <div class="inline-flex p-4 rounded-2xl bg-blue-50 text-blue-600 mb-3 shadow-inner">
-          <i class="fa-solid fa-gas-pump text-4xl"></i>
-        </div>
-        <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">KAD MINYAK KENDERAAN</h1>
-        <p class="text-xs font-semibold tracking-widest text-blue-600 uppercase mt-1">Hospital Kemaman</p>
-      </div>
-
-      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">ID Pemandu / Penyelia</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-id-card"></i></span>
-            <input type="text" id="loginId" required placeholder="Contoh: DRV5469 / SUP5055" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none font-medium text-slate-800">
-          </div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">ID Pemandu / Penyelia</label>
+          <input type="text" id="loginId" required placeholder="Contoh: DRV5469" class="w-full p-2.5 bg-slate-50 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
         </div>
-
         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">PIN 4-Digit</label>
-          <div class="relative">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400"><i class="fa-solid fa-lock"></i></span>
-            <input type="password" id="loginPin" maxlength="6" required placeholder="••••" class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all outline-none font-medium text-slate-800">
-          </div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">PIN 4-Digit</label>
+          <input type="password" id="loginPin" maxlength="6" required placeholder="••••" class="w-full p-2.5 bg-slate-50 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500">
         </div>
-
-        <button type="submit" id="loginSubmitBtn" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2">
-          <span>LOG MASUK</span>
-          <i class="fa-solid fa-arrow-right-to-bracket"></i>
-        </button>
+        <button type="submit" id="loginBtn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg text-sm transition">LOG MASUK</button>
       </form>
     </div>
   </section>
 
-  <!-- MAIN APP SECTION -->
+  <!-- SECTION: APLIKASI UTAMA -->
   <div id="appSection" class="hidden flex-1 flex flex-col">
-    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40 no-print">
-      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <button onclick="toggleMobileMenu()" class="md:hidden text-2xl text-slate-300 focus:outline-none">
-            <i class="fa-solid fa-bars"></i>
-          </button>
-          <div class="flex items-center gap-2">
-            <i class="fa-solid fa-gas-pump text-blue-400 text-2xl"></i>
-            <div>
-              <h2 class="font-bold text-sm md:text-base leading-tight">SYSTEM KAD MINYAK</h2>
-              <p class="text-[10px] text-slate-400">HOSPITAL KEMAMAN</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-4">
-          <div class="text-right hidden sm:block">
-            <p id="navUserName" class="font-bold text-sm text-slate-100">Nama Pengguna</p>
-            <p id="navUserId" class="text-xs text-blue-400 font-mono">ID: -</p>
-          </div>
-          <button onclick="handleLogout()" class="px-3 py-2 bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border border-red-500/30">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            <span class="hidden md:inline">Log Keluar</span>
-          </button>
-        </div>
+    <header class="bg-slate-900 text-white p-3 shadow-md flex items-center justify-between sticky top-0 z-40">
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-gas-pump text-blue-400 text-xl"></i>
+        <span class="font-bold text-sm">HOSPITAL KEMAMAN</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="navUserName" class="text-xs font-semibold hidden sm:inline">Nama Pengguna</span>
+        <button onclick="handleLogout()" class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-bold">Keluar</button>
       </div>
     </header>
 
-    <div class="flex-1 flex max-w-7xl w-full mx-auto">
-      <aside id="sidebarNav" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 z-30 w-64 bg-slate-800 text-slate-300 flex flex-col shadow-xl md:shadow-none no-print">
-        <div class="p-4 border-b border-slate-700/50 md:hidden flex justify-between items-center">
-          <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Menu Utama</span>
-          <button onclick="toggleMobileMenu()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-        </div>
-
-        <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
-          <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all hover:bg-slate-700 text-white bg-blue-600">
-            <i class="fa-solid fa-chart-line w-5 text-center"></i>
-            <span>Dashboard</span>
-          </button>
-          <button onclick="switchView('ambil')" id="nav-ambil" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all hover:bg-slate-700 text-slate-300">
-            <i class="fa-solid fa-id-card w-5 text-center"></i>
-            <span>Ambil Kad</span>
-          </button>
-          <button onclick="switchView('hantar')" id="nav-hantar" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all hover:bg-slate-700 text-slate-300">
-            <i class="fa-solid fa-rotate-left w-5 text-center"></i>
-            <span>Hantar Kad</span>
-          </button>
-          <button onclick="switchView('rekod')" id="nav-rekod" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all hover:bg-slate-700 text-slate-300">
-            <i class="fa-solid fa-gas-pump w-5 text-center"></i>
-            <span>Rekod Minyak</span>
-          </button>
-          <button onclick="switchView('sejarah')" id="nav-sejarah" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all hover:bg-slate-700 text-slate-300">
-            <i class="fa-solid fa-clock-rotate-left w-5 text-center"></i>
-            <span>Sejarah Rekod</span>
-          </button>
-          <button onclick="switchView('laporan')" id="nav-laporan" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all hover:bg-slate-700 text-slate-300">
-            <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i>
-            <span>Laporan & Graf</span>
-          </button>
-        </nav>
+    <div class="flex-1 flex flex-col md:flex-row max-w-7xl w-full mx-auto">
+      <!-- NAVIGASI -->
+      <aside class="bg-slate-800 text-slate-300 w-full md:w-56 p-2 flex md:flex-col gap-1 overflow-x-auto">
+        <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn flex-1 md:w-full p-2.5 rounded-lg text-xs font-semibold text-left flex items-center gap-2 bg-blue-600 text-white">
+          <i class="fa-solid fa-chart-line w-4"></i> Dashboard
+        </button>
+        <button onclick="switchView('ambil')" id="nav-ambil" class="nav-btn flex-1 md:w-full p-2.5 rounded-lg text-xs font-semibold text-left flex items-center gap-2 hover:bg-slate-700">
+          <i class="fa-solid fa-id-card w-4"></i> Ambil Kad
+        </button>
+        <button onclick="switchView('hantar')" id="nav-hantar" class="nav-btn flex-1 md:w-full p-2.5 rounded-lg text-xs font-semibold text-left flex items-center gap-2 hover:bg-slate-700">
+          <i class="fa-solid fa-rotate-left w-4"></i> Hantar Kad
+        </button>
+        <button onclick="switchView('rekod')" id="nav-rekod" class="nav-btn flex-1 md:w-full p-2.5 rounded-lg text-xs font-semibold text-left flex items-center gap-2 hover:bg-slate-700">
+          <i class="fa-solid fa-gas-pump w-4"></i> Rekod Minyak
+        </button>
+        <button onclick="switchView('sejarah')" id="nav-sejarah" class="nav-btn flex-1 md:w-full p-2.5 rounded-lg text-xs font-semibold text-left flex items-center gap-2 hover:bg-slate-700">
+          <i class="fa-solid fa-history w-4"></i> Sejarah
+        </button>
       </aside>
 
-      <main class="flex-1 p-4 md:p-6 overflow-y-auto bg-slate-100">
-        
-        <!-- DASHBOARD -->
-        <div id="view-dashboard" class="view-panel space-y-6">
-          <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-6 text-white shadow-lg">
-            <h2 id="dashWelcomeTitle" class="text-2xl font-bold">Selamat Datang, -</h2>
-            <p id="dashUserSub" class="text-blue-100 text-sm mt-1">ID Pengguna: -</p>
+      <!-- KANDUNGAN UTAMA -->
+      <main class="flex-1 p-4 bg-slate-100 overflow-y-auto">
+
+        <!-- VIEW: DASHBOARD -->
+        <div id="view-dashboard" class="view-panel space-y-4">
+          <div class="bg-blue-600 text-white p-4 rounded-xl">
+            <h2 id="dashWelcome" class="text-lg font-bold">Selamat Datang</h2>
+            <p id="dashSub" class="text-xs text-blue-100">ID: -</p>
           </div>
-
-          <div id="serviceAlertContainer" class="hidden bg-amber-50 border-2 border-amber-300 rounded-3xl p-5 shadow-sm space-y-3">
-            <div class="flex items-center gap-3 text-amber-800 font-bold text-sm md:text-base">
-              <i class="fa-solid fa-triangle-exclamation text-2xl text-amber-600 animate-bounce"></i>
-              <h3>KENDERAAN PERLU SERVIS (ODOMETER SEKARANG KURANG DARI 500KM DARI ODOMETER PERLU SERVIS)</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="bg-white p-3 rounded-lg border text-center">
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Kad Simpanan</p>
+              <h3 id="statSimpanan" class="text-xl font-bold text-slate-800">0</h3>
             </div>
-            <div id="serviceAlertList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
-          </div>
-
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-xs font-bold text-slate-400 uppercase">Kad Dalam Simpanan</p>
-                  <h3 id="statSimpanan" class="text-2xl font-extrabold text-slate-800 mt-1">0</h3>
-                </div>
-                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><i class="fa-solid fa-box-archive text-xl"></i></div>
-              </div>
+            <div class="bg-white p-3 rounded-lg border text-center">
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Kad Digunakan</p>
+              <h3 id="statDigunakan" class="text-xl font-bold text-slate-800">0</h3>
             </div>
-
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-xs font-bold text-slate-400 uppercase">Kad Sedang Digunakan</p>
-                  <h3 id="statDigunakan" class="text-2xl font-extrabold text-slate-800 mt-1">0</h3>
-                </div>
-                <div class="p-3 bg-amber-50 text-amber-600 rounded-xl"><i class="fa-solid fa-hand-holding-hand text-xl"></i></div>
-              </div>
+            <div class="bg-white p-3 rounded-lg border text-center">
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Kenderaan</p>
+              <h3 id="statKenderaan" class="text-xl font-bold text-slate-800">0</h3>
             </div>
-
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-              <div class="flex items-center justify-between mb-2">
-                <div>
-                  <p class="text-xs font-bold text-slate-400 uppercase">Jumlah Kenderaan</p>
-                  <h3 id="statKenderaan" class="text-2xl font-extrabold text-slate-800 mt-0.5">0</h3>
-                </div>
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i class="fa-solid fa-truck-medical text-xl"></i></div>
-              </div>
-              <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold">
-                <span class="text-red-600 flex items-center gap-1"><i class="fa-solid fa-ambulance"></i> Ambulans: <b id="statAmbulans" class="text-slate-800 text-xs">0</b></span>
-                <span class="text-blue-600 flex items-center gap-1"><i class="fa-solid fa-car"></i> Jabatan: <b id="statJabatan" class="text-slate-800 text-xs">0</b></span>
-              </div>
-            </div>
-
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-xs font-bold text-slate-400 uppercase">Rekod Isian Saya</p>
-                  <h3 id="statTransaksi" class="text-2xl font-extrabold text-slate-800 mt-1">0</h3>
-                </div>
-                <div class="p-3 bg-purple-50 text-purple-600 rounded-xl"><i class="fa-solid fa-receipt text-xl"></i></div>
-              </div>
+            <div class="bg-white p-3 rounded-lg border text-center">
+              <p class="text-[10px] font-bold text-slate-400 uppercase">Isian Saya</p>
+              <h3 id="statTransaksi" class="text-xl font-bold text-slate-800">0</h3>
             </div>
           </div>
-
-          <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-              <div class="flex items-center gap-2 text-slate-800 font-bold text-lg">
-                <i class="fa-solid fa-clock-rotate-left text-amber-500"></i>
-                <h3>Senarai Kad Minyak Belum Dipulangkan</h3>
-              </div>
-              <button onclick="loadInitialAppData()" class="text-xs text-blue-600 font-bold hover:underline flex items-center gap-1">
-                <i class="fa-solid fa-arrows-rotate"></i> Muat Semula
-              </button>
-            </div>
-
+          <div class="bg-white p-4 rounded-xl border space-y-2">
+            <h3 class="font-bold text-xs uppercase text-slate-700">Kad Minyak Belum Dipulangkan</h3>
             <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr class="bg-slate-800 text-white uppercase tracking-wider font-semibold">
-                    <th class="p-3 rounded-l-lg">Kenderaan (Plat)</th>
-                    <th class="p-3">Pemandu Bertanggungjawab</th>
-                    <th class="p-3">Jenis Kad / Provider</th>
-                    <th class="p-3">Tarikh / Masa Ambil</th>
-                    <th class="p-3 rounded-r-lg">Diserahkan Oleh</th>
-                  </tr>
-                </thead>
-                <tbody id="outstandingTableBody" class="divide-y divide-slate-100">
-                  <tr><td colspan="5" class="p-4 text-center text-slate-400">Memuatkan senarai kad...</td></tr>
-                </tbody>
+              <table class="w-full text-left text-xs">
+                <thead><tr class="bg-slate-800 text-white"><th class="p-2">Plat</th><th class="p-2">Pemandu</th><th class="p-2">Kad</th><th class="p-2">Masa Ambil</th></tr></thead>
+                <tbody id="outstandingTableBody" class="divide-y"><tr><td colspan="4" class="p-3 text-center text-slate-400">Memuatkan...</td></tr></tbody>
               </table>
             </div>
           </div>
         </div>
 
-        <!-- AMBIL KAD -->
-        <div id="view-ambil" class="view-panel hidden max-w-2xl mx-auto">
-          <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-            <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-              <i class="fa-solid fa-id-card text-blue-600"></i>
-              Borang Pinjaman / Ambil Kad Minyak
-            </h3>
-
-            <form id="formAmbilKad" onsubmit="submitAmbilKad(event)" class="space-y-5">
-              <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-2">1. Pilih Kenderaan (No Plat) *</label>
-                <select id="ambilKenderaan" onchange="handleAmbilVehicleChange()" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
-                  <option value="">-- Sila Pilih Kenderaan --</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-2">2. Pilih Kad Minyak Terikat (Boleh pilih lebih dari 1 kad) *</label>
-                <div id="ambilKadCheckboxGroup" class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2 min-h-[80px]">
-                  <p class="text-xs text-slate-400 italic">-- Sila Pilih Kenderaan Dahulu --</p>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-2">3. Pilih Penyelia / PPP Penyerah Kad *</label>
-                <select id="ambilPenyelia" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-medium">
-                  <option value="">-- Sila Pilih Penyelia/PPP Sahaja --</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Tujuan Penggunaan *</label>
-                <textarea id="ambilTujuan" rows="3" required placeholder="Nyatakan lokasi atau tugas rasmi (contoh: Tugasan Luar ke Selangor)..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
-              </div>
-
-              <button type="submit" id="btnSubmitAmbil" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-all">
-                <i class="fa-solid fa-check-circle mr-1"></i> DISAHKAN & AMBIL KAD SEKALIGUS
-              </button>
-            </form>
-          </div>
+        <!-- VIEW: AMBIL KAD -->
+        <div id="view-ambil" class="view-panel hidden max-w-lg mx-auto bg-white p-4 rounded-xl border">
+          <h3 class="font-bold text-sm mb-4 text-slate-800">Borang Ambil Kad Minyak</h3>
+          <form onsubmit="submitAmbilKad(event)" class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold mb-1">1. Pilih Kenderaan *</label>
+              <select id="ambilKenderaan" onchange="handleAmbilVehicleChange()" required class="w-full p-2 bg-slate-50 border rounded-lg outline-none"></select>
+            </div>
+            <div id="ambilLoanerGroup" class="hidden p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <label class="block font-bold text-amber-800 mb-1">No. Plat Kenderaan Loaner Radicare *</label>
+              <input type="text" id="ambilNoPlatLoaner" placeholder="Contoh: WXA 8899" class="w-full p-2 bg-white border rounded-lg font-bold uppercase outline-none">
+            </div>
+            <div>
+              <label class="block font-bold mb-1">2. Pilih Kad Minyak *</label>
+              <div id="ambilKadCheckboxGroup" class="p-2 bg-slate-50 border rounded-lg space-y-1"></div>
+            </div>
+            <div>
+              <label class="block font-bold mb-1">3. Penyelia Penyerah *</label>
+              <select id="ambilPenyelia" required class="w-full p-2 bg-slate-50 border rounded-lg outline-none"></select>
+            </div>
+            <div>
+              <label class="block font-bold mb-1">Tujuan Penggunaan *</label>
+              <textarea id="ambilTujuan" rows="2" required placeholder="Tugasan rasmi..." class="w-full p-2 bg-slate-50 border rounded-lg outline-none"></textarea>
+            </div>
+            <button type="submit" id="btnSubmitAmbil" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg">DISAHKAN & AMBIL KAD</button>
+          </form>
         </div>
 
-        <!-- HANTAR KAD -->
-        <div id="view-hantar" class="view-panel hidden max-w-2xl mx-auto space-y-6">
-          <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-            <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <i class="fa-solid fa-rotate-left text-amber-600"></i>
-              Pemulangan / Hantar Kad Minyak
-            </h3>
-
-            <div id="hantarContainer" class="space-y-4">
-              <p class="text-slate-500 text-sm">Memuatkan senarai kad aktif...</p>
-            </div>
-          </div>
+        <!-- VIEW: HANTAR KAD -->
+        <div id="view-hantar" class="view-panel hidden max-w-lg mx-auto bg-white p-4 rounded-xl border">
+          <h3 class="font-bold text-sm mb-3 text-slate-800">Pemulangan Kad Minyak</h3>
+          <div id="hantarContainer" class="space-y-3 text-xs">Memuatkan...</div>
         </div>
 
-        <!-- REKOD MINYAK -->
-        <div id="view-rekod" class="view-panel hidden max-w-2xl mx-auto">
-          <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-            <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-              <i class="fa-solid fa-gas-pump text-emerald-600"></i>
-              Borang Rekod Pengisian Minyak
-            </h3>
-
-            <form id="formRekodMinyak" onsubmit="submitRekodMinyak(event)" class="space-y-5">
+        <!-- VIEW: REKOD MINYAK -->
+        <div id="view-rekod" class="view-panel hidden max-w-lg mx-auto bg-white p-4 rounded-xl border">
+          <h3 class="font-bold text-sm mb-4 text-slate-800">Borang Rekod Isian Minyak</h3>
+          <form onsubmit="submitRekodMinyak(event)" class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold mb-1">1. Pilih Kenderaan *</label>
+              <select id="rekodKenderaan" onchange="handleRekodVehicleChange()" required class="w-full p-2 bg-slate-50 border rounded-lg outline-none"></select>
+            </div>
+            <div id="rekodLoanerGroup" class="hidden p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <label class="block font-bold text-amber-800 mb-1">No. Plat Kenderaan Loaner Radicare *</label>
+              <input type="text" id="rekodNoPlatLoaner" placeholder="Contoh: WXA 8899" class="w-full p-2 bg-white border rounded-lg font-bold uppercase outline-none">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-2">1. Pilih Kenderaan (No Plat) *</label>
-                <select id="rekodKenderaan" onchange="handleRekodVehicleChange()" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
-                  <option value="">-- Sila Pilih Kenderaan --</option>
-                </select>
+                <label class="block font-bold mb-1">2. Pilih Kad *</label>
+                <select id="rekodKadId" required class="w-full p-2 bg-slate-50 border rounded-lg outline-none"></select>
               </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 uppercase mb-2">2. Pilih Kad Minyak Terikat *</label>
-                  <select id="rekodKadId" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold text-slate-700">
-                    <option value="">-- Pilih Kenderaan Dahulu --</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Stesen Minyak (Nama / Lokasi) *</label>
-                  <input type="text" id="rekodNamaStesen" required placeholder="Contoh: Petronas R&R Temerloh / Shell Gambang" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-medium">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Tarikh Isian *</label>
-                  <input type="date" id="rekodTarikh" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Masa Isian *</label>
-                  <input type="time" id="rekodMasa" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-              </div>
-
               <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Bacaan Odometer Semasa *</label>
-                <input type="number" id="rekodOdometer" required placeholder="Contoh: 125150" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                <label class="block font-bold mb-1">Stesen Minyak *</label>
+                <input type="text" id="rekodNamaStesen" required placeholder="Petronas Kemaman" class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
               </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Liter *</label>
-                  <input type="number" step="0.01" id="rekodLiter" oninput="calcTotalRM()" required placeholder="0.00" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Harga / Liter (RM) *</label>
-                  <input type="number" step="0.01" id="rekodHarga" oninput="calcTotalRM()" required placeholder="2.05" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Jumlah (RM)</label>
-                  <input type="text" id="rekodTotalRM" readonly placeholder="0.00" class="w-full p-3 bg-slate-200 font-extrabold text-emerald-700 border border-slate-300 rounded-xl outline-none">
-                </div>
-              </div>
-
+            </div>
+            <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Tujuan / Catatan</label>
-                <input type="text" id="rekodTujuan" placeholder="Tugas rasmi ke KL / No Resit" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
+                <label class="block font-bold mb-1">Tarikh *</label>
+                <input type="date" id="rekodTarikh" required class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
               </div>
-
-              <button type="submit" id="btnSubmitRekod" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition-all">
-                <i class="fa-solid fa-floppy-disk mr-1"></i> SIMPAN REKOD ISIAN
-              </button>
-            </form>
-          </div>
+              <div>
+                <label class="block font-bold mb-1">Masa *</label>
+                <input type="time" id="rekodMasa" required class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
+              </div>
+            </div>
+            <div>
+              <label class="block font-bold mb-1">Odometer Semasa *</label>
+              <input type="number" id="rekodOdometer" required placeholder="125150" class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="block font-bold mb-1">Liter *</label>
+                <input type="number" step="0.01" id="rekodLiter" oninput="calcTotalRM()" required placeholder="0.00" class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
+              </div>
+              <div>
+                <label class="block font-bold mb-1">Harga/L *</label>
+                <input type="number" step="0.01" id="rekodHarga" oninput="calcTotalRM()" required placeholder="2.05" class="w-full p-2 bg-slate-50 border rounded-lg outline-none">
+              </div>
+              <div>
+                <label class="block font-bold mb-1">Jumlah RM</label>
+                <input type="text" id="rekodTotalRM" readonly placeholder="0.00" class="w-full p-2 bg-slate-200 font-bold text-emerald-700 border rounded-lg outline-none">
+              </div>
+            </div>
+            <button type="submit" id="btnSubmitRekod" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg">SIMPAN REKOD ISIAN</button>
+          </form>
         </div>
 
-        <!-- SEJARAH REKOD -->
-        <div id="view-sejarah" class="view-panel hidden space-y-4">
-          <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
-              <div>
-                <h3 class="text-xl font-bold text-slate-800">Sejarah Transaksi Diri</h3>
-                <p id="sejarahMonthLabel" class="text-xs text-blue-600 font-semibold mt-0.5">Memuatkan bulan...</p>
-              </div>
-              <span class="text-[11px] bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-bold border border-blue-200 self-start md:self-auto">
-                Paparan Bulan Semasa Sahaja
-              </span>
-            </div>
-
-            <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse">
-                <thead>
-                  <tr class="bg-slate-800 text-white text-xs uppercase tracking-wider">
-                    <th class="p-3 rounded-l-lg">Tarikh & Masa</th>
-                    <th class="p-3">Kenderaan</th>
-                    <th class="p-3">Kad</th>
-                    <th class="p-3">Stesen</th>
-                    <th class="p-3">Odometer</th>
-                    <th class="p-3">Liter</th>
-                    <th class="p-3 rounded-r-lg">Jumlah (RM)</th>
-                  </tr>
-                </thead>
-                <tbody id="sejarahTableBody" class="text-sm divide-y divide-slate-100">
-                  <tr><td colspan="7" class="p-4 text-center text-slate-400">Memuatkan sejarah...</td></tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div id="paginationControls" class="flex items-center justify-between pt-4 border-t border-slate-100 mt-4 text-xs font-semibold">
-              <span id="pageIndicator" class="text-slate-500">Halaman 1 dari 1</span>
-              <div class="flex items-center gap-2">
-                <button id="btnPrevPage" onclick="changePage(-1)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                  <i class="fa-solid fa-chevron-left mr-1"></i> Sebelumnya
-                </button>
-                <button id="btnNextPage" onclick="changePage(1)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                  Seterusnya <i class="fa-solid fa-chevron-right ml-1"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- LAPORAN & GRAF -->
-        <div id="view-laporan" class="view-panel hidden space-y-6">
-          <div id="printableReportArea" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-6">
-            
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-              <div>
-                <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                  <i class="fa-solid fa-chart-area text-blue-600"></i>
-                  Laporan & Analitik Penggunaan Kad Minyak
-                </h3>
-                <p class="text-xs text-slate-500 mt-1">Analitik Kecekapan Enjin (KM/Liter), Kos per KM & Eksport Laporan</p>
-              </div>
-
-              <div class="flex flex-wrap items-center gap-2 no-print">
-                <select id="reportFilterMonth" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold outline-none">
-                  <option value="1">Januari</option>
-                  <option value="2">Februari</option>
-                  <option value="3">Mac</option>
-                  <option value="4">April</option>
-                  <option value="5">Mei</option>
-                  <option value="6">Jun</option>
-                  <option value="7">Julai</option>
-                  <option value="8">Ogos</option>
-                  <option value="9">September</option>
-                  <option value="10">Oktober</option>
-                  <option value="11">November</option>
-                  <option value="12">Disember</option>
-                </select>
-                <select id="reportFilterYear" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold outline-none">
-                  <option value="2025">2025</option>
-                  <option value="2026" selected>2026</option>
-                  <option value="2027">2027</option>
-                </select>
-                <button onclick="loadReportData()" class="px-3.5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 shadow-sm">
-                  <i class="fa-solid fa-filter"></i> Tapis
-                </button>
-                <button onclick="exportToCSV()" class="px-3.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 shadow-sm">
-                  <i class="fa-solid fa-file-excel"></i> Excel (CSV)
-                </button>
-                <button onclick="printPDFReport()" class="px-3.5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1 shadow-sm">
-                  <i class="fa-solid fa-print"></i> Cetak / PDF
-                </button>
-              </div>
-            </div>
-
-            <div id="reportSummary" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl">
-                <p class="text-xs font-bold text-slate-400 uppercase">Jumlah Isian Transaksi</p>
-                <h4 id="repTotalTx" class="text-2xl font-black text-slate-800 mt-1">0</h4>
-              </div>
-              <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl">
-                <p class="text-xs font-bold text-slate-400 uppercase">Jumlah Penggunaan Liter</p>
-                <h4 id="repTotalLiter" class="text-2xl font-black text-blue-600 mt-1">0.00 L</h4>
-              </div>
-              <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl">
-                <p class="text-xs font-bold text-slate-400 uppercase">Jumlah Kos (RM)</p>
-                <h4 id="repTotalRM" class="text-2xl font-black text-emerald-600 mt-1">RM 0.00</h4>
-              </div>
-            </div>
-
-            <!-- JADUAL ANALITIK -->
-            <div class="bg-slate-50 p-4 border border-slate-200 rounded-2xl space-y-3">
-              <div class="flex items-center justify-between">
-                <h4 class="text-sm font-bold text-slate-800 uppercase flex items-center gap-2">
-                  <i class="fa-solid fa-gauge-high text-blue-600"></i>
-                  Analitik Kecekapan Bahan Api Mengikut Kenderaan (KM/L & RM/KM)
-                </h4>
-                <span class="text-[10px] text-slate-500 font-semibold no-print">* Berdasarkan beza Odometer min & max bulan ini</span>
-              </div>
-
-              <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr class="bg-slate-200 text-slate-700 uppercase font-bold">
-                      <th class="p-2.5 rounded-l-lg">No. Plat</th>
-                      <th class="p-2.5">Kenderaan</th>
-                      <th class="p-2.5">Perjalanan (KM)</th>
-                      <th class="p-2.5">Isi (Liter)</th>
-                      <th class="p-2.5">Jumlah Kos</th>
-                      <th class="p-2.5">Kecekapan (KM/L)</th>
-                      <th class="p-2.5">Kos per KM</th>
-                      <th class="p-2.5 rounded-r-lg">Status Enjin</th>
-                    </tr>
-                  </thead>
-                  <tbody id="vehicleAnalyticsTableBody" class="divide-y divide-slate-200 bg-white">
-                    <tr><td colspan="8" class="p-4 text-center text-slate-400">Memuatkan analitik kecekapan...</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div class="bg-slate-50 p-4 md:p-6 border border-slate-200 rounded-2xl space-y-2">
-              <div class="flex items-center justify-between mb-2">
-                <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wider">Graf Penggunaan Bahan Api Harian (Liter)</h4>
-                <div class="flex items-center gap-4 text-xs font-bold">
-                  <span class="flex items-center gap-1.5 text-red-600"><span class="w-3 h-3 bg-red-500 rounded-full inline-block"></span> Ambulans</span>
-                  <span class="flex items-center gap-1.5 text-blue-600"><span class="w-3 h-3 bg-blue-600 rounded-full inline-block"></span> Jabatan</span>
-                </div>
-              </div>
-              <div class="relative w-full h-72 md:h-80">
-                <canvas id="fuelUsageChart"></canvas>
-              </div>
-            </div>
-
-            <div class="overflow-x-auto pt-2 space-y-3">
-              <h4 class="text-sm font-bold text-slate-700 uppercase">Senarai Transaksi Minyak Bulan Ini</h4>
-              <table class="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr class="bg-slate-800 text-white uppercase font-bold">
-                    <th class="p-3 rounded-l-lg">Tarikh & Masa</th>
-                    <th class="p-3">Pengguna</th>
-                    <th class="p-3">No. Plat</th>
-                    <th class="p-3">No. Kad (4-Digit)</th>
-                    <th class="p-3">Stesen Minyak</th>
-                    <th class="p-3">Odometer</th>
-                    <th class="p-3">Liter</th>
-                    <th class="p-3 rounded-r-lg">Jumlah (RM)</th>
-                  </tr>
-                </thead>
-                <tbody id="laporanTableBody" class="divide-y divide-slate-100">
-                  <tr><td colspan="8" class="p-4 text-center text-slate-400">Tiada rekod dipaparkan.</td></tr>
-                </tbody>
-              </table>
-
-              <div id="reportPaginationControls" class="flex items-center justify-between pt-3 text-xs font-semibold no-print">
-                <span id="reportPageIndicator" class="text-slate-500">Halaman 1 dari 1</span>
-                <div class="flex items-center gap-2">
-                  <button id="btnReportPrevPage" onclick="changeReportPage(-1)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                    <i class="fa-solid fa-chevron-left mr-1"></i> Sebelumnya
-                  </button>
-                  <button id="btnReportNextPage" onclick="changeReportPage(1)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                    Seterusnya <i class="fa-solid fa-chevron-right ml-1"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
+        <!-- VIEW: SEJARAH -->
+        <div id="view-sejarah" class="view-panel hidden bg-white p-4 rounded-xl border space-y-3">
+          <h3 class="font-bold text-sm text-slate-800">Sejarah Transaksi Diri</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead><tr class="bg-slate-800 text-white"><th class="p-2">Tarikh</th><th class="p-2">Plat</th><th class="p-2">Stesen</th><th class="p-2">Odometer</th><th class="p-2">Liter</th><th class="p-2">Jumlah</th></tr></thead>
+              <tbody id="sejarahTableBody" class="divide-y"><tr><td colspan="6" class="p-3 text-center text-slate-400">Memuatkan...</td></tr></tbody>
+            </table>
           </div>
         </div>
 
@@ -566,287 +219,171 @@
   </div>
 
   <script>
-    // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwEShxEJ2HiHCtZ5AAs2hdiKIwapwXOUh1tjTgLjn5lOdgdbV5EnX5mu3XmXzyCtKvfUw/exec";
+    // GANTIKAN DENGAN URL WEB APP APPS SCRIPT ANDA SELEPAS DEPLOY
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwtisXgDnz2SVonZeU6vE78HJW0myFg3TBqJxqvWnuIRJqDwH0d09E_QoQKPTVQn4SnHw/exec";
 
     let currentUser = null;
-    let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
-    let pendingOdoPayload = null;
-    let currentOdoCallbackType = null;
-    let fuelChartInstance = null;
-
-    let fullSejarahData = [];
-    let currentPage = 1;
-
-    let fullReportData = [];
-    let currentReportPage = 1;
-
-    let globalReportAnalytics = [];
-
-    const itemsPerPage = 10;
+    let masterData = { kenderaan: [], kadMinyak: [], penyelia: [], stats: {} };
 
     document.addEventListener("DOMContentLoaded", () => {
       const now = new Date();
       document.getElementById('rekodTarikh').value = now.toISOString().split('T')[0];
       document.getElementById('rekodMasa').value = now.toTimeString().slice(0, 5);
-      
-      document.getElementById('reportFilterMonth').value = now.getMonth() + 1;
-      document.getElementById('reportFilterYear').value = now.getFullYear();
     });
 
     async function callBackendApi(action, payload = {}) {
       try {
         const response = await fetch(API_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8"
-          },
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({ action: action, payload: payload })
         });
         return await response.json();
-      } catch (err) {
-        throw new Error("Ralat Rangkaian/API: " + err.message);
-      }
+      } catch (err) { throw new Error("API Connection Error: " + err.message); }
     }
 
-    function showToast(message, type = "success") {
+    function showToast(msg, type = "success") {
       const container = document.getElementById("toastContainer");
       const toast = document.createElement("div");
-      
-      const bgColor = type === "success" ? "bg-emerald-600" : type === "warning" ? "bg-amber-500" : "bg-red-600";
-      const icon = type === "success" ? "fa-circle-check" : type === "warning" ? "fa-triangle-exclamation" : "fa-circle-xmark";
-
-      toast.className = `${bgColor} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 transition-all duration-300 transform translate-y-2 opacity-0 text-sm font-medium`;
-      toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i><span>${message}</span>`;
-      
+      toast.className = `${type === "success" ? "bg-emerald-600" : "bg-red-600"} text-white px-3 py-2 rounded-lg shadow-lg text-xs font-medium`;
+      toast.innerText = msg;
       container.appendChild(toast);
-      setTimeout(() => toast.classList.remove("translate-y-2", "opacity-0"), 10);
-      setTimeout(() => {
-        toast.classList.add("opacity-0");
-        setTimeout(() => toast.remove(), 300);
-      }, 4000);
+      setTimeout(() => toast.remove(), 3500);
     }
 
-    function toggleLoading(show, text = "Memproses data...") {
-      const overlay = document.getElementById("loadingOverlay");
+    function toggleLoading(show, text = "Memproses...") {
       document.getElementById("loadingText").innerText = text;
-      overlay.style.display = show ? "flex" : "none";
-    }
-
-    function formatExactDateTime(rawDate, rawTime) {
-      if (!rawDate) return "-";
-      let dateVal = String(rawDate).trim();
-      let timeVal = rawTime ? String(rawTime).trim() : "";
-
-      if (dateVal.includes(" ")) {
-        const parts = dateVal.split(" ");
-        const cleanD = parts[0];
-        const cleanT = parts[1].substring(0, 5);
-        return `${cleanD} ${cleanT}`;
-      }
-
-      const cleanDateOnly = dateVal.split("T")[0];
-      const cleanTimeOnly = timeVal ? timeVal.substring(0, 5) : "";
-
-      return cleanTimeOnly ? `${cleanDateOnly} ${cleanTimeOnly}` : cleanDateOnly;
+      document.getElementById("loadingOverlay").style.display = show ? "flex" : "none";
     }
 
     async function handleLogin(e) {
       e.preventDefault();
       const id = document.getElementById("loginId").value.trim();
       const pin = document.getElementById("loginPin").value.trim();
-
-      if (!id || !pin) return showToast("Sila isi ID dan PIN.", "warning");
-
       toggleLoading(true, "Mengesahkan akaun...");
-      document.getElementById("loginSubmitBtn").disabled = true;
 
       try {
         const res = await callBackendApi("loginDriver", { idPemandu: id, pin: pin });
         toggleLoading(false);
-        document.getElementById("loginSubmitBtn").disabled = false;
-
         if (res.success) {
           currentUser = res.user;
-          showToast(`Selamat Datang, ${currentUser.nama}!`, "success");
-          
           document.getElementById("navUserName").innerText = currentUser.nama;
-          document.getElementById("navUserId").innerText = `ID: ${currentUser.idPemandu}`;
-          document.getElementById("dashWelcomeTitle").innerText = `Selamat Datang, ${currentUser.nama}`;
-          document.getElementById("dashUserSub").innerText = `ID Pengguna: ${currentUser.idPemandu} (${currentUser.jawatan})`;
-
+          document.getElementById("dashWelcome").innerText = `Selamat Datang, ${currentUser.nama}`;
+          document.getElementById("dashSub").innerText = `ID: ${currentUser.idPemandu} (${currentUser.jawatan})`;
           document.getElementById("loginSection").classList.add("hidden");
           document.getElementById("appSection").classList.remove("hidden");
-
           loadInitialAppData();
-        } else {
-          showToast(res.message, "error");
-        }
-      } catch (err) {
-        toggleLoading(false);
-        document.getElementById("loginSubmitBtn").disabled = false;
-        showToast(err.message, "error");
-      }
+        } else { showToast(res.message, "error"); }
+      } catch (err) { toggleLoading(false); showToast(err.message, "error"); }
     }
 
     function handleLogout() {
       currentUser = null;
-      document.getElementById("loginForm").reset();
       document.getElementById("appSection").classList.add("hidden");
       document.getElementById("loginSection").classList.remove("hidden");
-      showToast("Anda telah log keluar.", "warning");
     }
 
     async function loadInitialAppData() {
-      toggleLoading(true, "Memuatkan data sistem...");
-
+      toggleLoading(true, "Memuatkan data...");
       try {
         const res = await callBackendApi("getInitialData", { idPemandu: currentUser.idPemandu });
         toggleLoading(false);
         if (res.success) {
           masterData = res.data;
           populateDropdowns();
-          renderDashboardStats(res.data.stats);
-          renderOutstandingCards(res.data.outstandingCards);
-          renderServiceAlerts(res.data.serviceAlerts);
-        } else {
-          showToast(res.message, "error");
+          renderStats(res.data.stats);
+          renderOutstanding(res.data.outstandingCards);
         }
-      } catch (err) {
-        toggleLoading(false);
-        showToast(err.message, "error");
-      }
+      } catch (err) { toggleLoading(false); showToast(err.message, "error"); }
     }
 
     function populateDropdowns() {
-      const ambilVehSelect = document.getElementById("ambilKenderaan");
-      const rekodVehSelect = document.getElementById("rekodKenderaan");
-      const ambilPenyeliaSelect = document.getElementById("ambilPenyelia");
+      const ambV = document.getElementById("ambilKenderaan");
+      const rekV = document.getElementById("rekodKenderaan");
+      const ambP = document.getElementById("ambilPenyelia");
       
-      ambilVehSelect.innerHTML = '<option value="">-- Pilih Kenderaan --</option>';
-      rekodVehSelect.innerHTML = '<option value="">-- Pilih Kenderaan --</option>';
-      ambilPenyeliaSelect.innerHTML = '<option value="">-- Sila Pilih Penyelia/PPP Sahaja --</option>';
+      ambV.innerHTML = '<option value="">-- Pilih Kenderaan --</option>';
+      rekV.innerHTML = '<option value="">-- Pilih Kenderaan --</option>';
+      ambP.innerHTML = '<option value="">-- Pilih Penyelia --</option>';
 
       masterData.kenderaan.forEach(v => {
-        const tagServis = v.perluServis ? ' ⚠️ [PERLU SERVIS]' : '';
-        const opt = `<option value="${v.ID_KENDERAAN}">${v.NO_PENDAFTARAN} - ${v.NAMA_KENDERAAN}${tagServis}</option>`;
-        ambilVehSelect.innerHTML += opt;
-        rekodVehSelect.innerHTML += opt;
+        const opt = `<option value="${v.ID_KENDERAAN}">${v.NO_PENDAFTARAN} - ${v.NAMA_KENDERAAN}</option>`;
+        ambV.innerHTML += opt; rekV.innerHTML += opt;
       });
-
       masterData.penyelia.forEach(p => {
-        ambilPenyeliaSelect.innerHTML += `<option value="${p.ID_PEMANDU}">${p.NAMA_PEMANDU} (${p.JAWATAN})</option>`;
+        ambP.innerHTML += `<option value="${p.ID_PEMANDU}">${p.NAMA_PEMANDU} (${p.JAWATAN})</option>`;
       });
     }
 
     function handleAmbilVehicleChange() {
       const vId = document.getElementById("ambilKenderaan").value;
-      const checkboxGroup = document.getElementById("ambilKadCheckboxGroup");
+      const grp = document.getElementById("ambilKadCheckboxGroup");
+      const loaner = document.getElementById("ambilLoanerGroup");
+      grp.innerHTML = "";
+      if (!vId) { loaner.classList.add("hidden"); return; }
 
-      checkboxGroup.innerHTML = "";
+      const v = masterData.kenderaan.find(x => String(x.ID_KENDERAAN).toUpperCase() === String(vId).toUpperCase());
+      const isL = String(v ? v.NO_PENDAFTARAN : "").toUpperCase().includes("LOANER");
+      loaner.classList.toggle("hidden", !isL);
 
-      if (!vId) {
-        checkboxGroup.innerHTML = '<p class="text-xs text-slate-400 italic">-- Sila Pilih Kenderaan Dahulu --</p>';
-        return;
-      }
-
-      const matchedCards = masterData.kadMinyak.filter(k => String(k.ID_KENDERAAN).toUpperCase() === String(vId).toUpperCase());
-
-      if (matchedCards.length > 0) {
-        matchedCards.forEach(kad => {
-          const isUsed = String(kad.STATUS_KAD).toUpperCase() === "SEDANG DIGUNAKAN";
-          const disabledAttr = isUsed ? "disabled" : "";
-          const badgeBg = isUsed ? "bg-red-100 text-red-700" : "bg-emerald-100 text-emerald-700";
-
-          checkboxGroup.innerHTML += `
-            <label class="flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 cursor-pointer transition-all ${isUsed ? 'opacity-60 cursor-not-allowed' : ''}">
-              <input type="checkbox" name="ambilKadCheckbox" value="${kad.ID_KAD}" ${disabledAttr} class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-              <div class="flex-1 flex items-center justify-between">
-                <span class="font-bold text-slate-800 text-xs">No. Kad: ${kad.NO_KAD_4_DIGIT} (${kad.PROVIDER})</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeBg}">${kad.STATUS_KAD}</span>
-              </div>
-            </label>
-          `;
-        });
-      } else {
-        checkboxGroup.innerHTML = '<p class="text-xs text-red-500 italic">-- Tiada Kad Didaftarkan Bagi Kenderaan Ini --</p>';
-      }
+      const cards = masterData.kadMinyak.filter(k => String(k.ID_KENDERAAN).toUpperCase() === String(vId).toUpperCase());
+      cards.forEach(kad => {
+        const isUsed = String(kad.STATUS_KAD).toUpperCase() === "SEDANG DIGUNAKAN";
+        grp.innerHTML += `
+          <label class="flex items-center gap-2 p-1.5 bg-white border rounded ${isUsed?'opacity-50':''}">
+            <input type="checkbox" name="ambilKadCb" value="${kad.ID_KAD}" ${isUsed?'disabled':''}>
+            <span>No. Kad: ${kad.NO_KAD_4_DIGIT} (${kad.PROVIDER}) - <b>${kad.STATUS_KAD}</b></span>
+          </label>`;
+      });
     }
 
     function handleRekodVehicleChange() {
       const vId = document.getElementById("rekodKenderaan").value;
-      const kadSelect = document.getElementById("rekodKadId");
+      const select = document.getElementById("rekodKadId");
+      const loaner = document.getElementById("rekodLoanerGroup");
+      select.innerHTML = '<option value="">-- Pilih Kad --</option>';
+      if (!vId) { loaner.classList.add("hidden"); return; }
 
-      kadSelect.innerHTML = '<option value="">-- Pilih Kad Minyak --</option>';
+      const v = masterData.kenderaan.find(x => String(x.ID_KENDERAAN).toUpperCase() === String(vId).toUpperCase());
+      loaner.classList.toggle("hidden", !String(v ? v.NO_PENDAFTARAN : "").toUpperCase().includes("LOANER"));
 
-      if (!vId) {
-        kadSelect.innerHTML = '<option value="">-- Sila Pilih Kenderaan Dahulu --</option>';
-        return;
-      }
-
-      const matchedCards = masterData.kadMinyak.filter(k => String(k.ID_KENDERAAN).toUpperCase() === String(vId).toUpperCase());
-
-      if (matchedCards.length > 0) {
-        matchedCards.forEach(kad => {
-          kadSelect.innerHTML += `<option value="${kad.ID_KAD}">No. Kad: ${kad.NO_KAD_4_DIGIT} (${kad.PROVIDER})</option>`;
-        });
-      } else {
-        kadSelect.innerHTML = '<option value="">-- Tiada Kad Didaftarkan Bagi Kenderaan Ini --</option>';
-      }
+      const cards = masterData.kadMinyak.filter(k => String(k.ID_KENDERAAN).toUpperCase() === String(vId).toUpperCase());
+      cards.forEach(k => { select.innerHTML += `<option value="${k.ID_KAD}">${k.NO_KAD_4_DIGIT} (${k.PROVIDER})</option>`; });
     }
 
     function calcTotalRM() {
-      const liter = parseFloat(document.getElementById("rekodLiter").value) || 0;
-      const harga = parseFloat(document.getElementById("rekodHarga").value) || 0;
-      document.getElementById("rekodTotalRM").value = (liter * harga).toFixed(2);
+      const l = parseFloat(document.getElementById("rekodLiter").value) || 0;
+      const h = parseFloat(document.getElementById("rekodHarga").value) || 0;
+      document.getElementById("rekodTotalRM").value = (l * h).toFixed(2);
     }
 
     async function submitAmbilKad(e) {
       e.preventDefault();
-
-      const checkedBoxes = document.querySelectorAll('input[name="ambilKadCheckbox"]:checked');
-      const selectedKadIds = Array.from(checkedBoxes).map(cb => cb.value);
+      const cbs = document.querySelectorAll('input[name="ambilKadCb"]:checked');
+      const selected = Array.from(cbs).map(c => c.value);
+      if (!selected.length) return showToast("Sila pilih sekurang-kurangnya satu kad.", "error");
 
       const payload = {
         idPemandu: currentUser.idPemandu,
         idKenderaan: document.getElementById("ambilKenderaan").value,
-        selectedKadIds: selectedKadIds,
+        selectedKadIds: selected,
         idPenyelia: document.getElementById("ambilPenyelia").value,
-        tujuan: document.getElementById("ambilTujuan").value
+        tujuan: document.getElementById("ambilTujuan").value,
+        noPlatLoaner: document.getElementById("ambilNoPlatLoaner").value.trim()
       };
 
-      if (!payload.idKenderaan) return showToast("Sila pilih kenderaan.", "warning");
-      if (selectedKadIds.length === 0) return showToast("Sila tanda sekurang-kurangnya SATU kad minyak.", "warning");
-      if (!payload.idPenyelia) return showToast("Sila pilih Penyelia/PPP penyerah kad.", "warning");
-
-      toggleLoading(true, "Mengemaskini penyerahan kad minyak...");
-      document.getElementById("btnSubmitAmbil").disabled = true;
-
+      toggleLoading(true, "Menyimpan...");
       try {
         const res = await callBackendApi("ambilKad", payload);
         toggleLoading(false);
-        document.getElementById("btnSubmitAmbil").disabled = false;
-
-        if (res.success) {
-          showToast(res.message, "success");
-          document.getElementById("formAmbilKad").reset();
-          document.getElementById("ambilKadCheckboxGroup").innerHTML = '<p class="text-xs text-slate-400 italic">-- Sila Pilih Kenderaan Dahulu --</p>';
-          loadInitialAppData();
-          switchView('dashboard');
-        } else {
-          showToast(res.message, "error");
-        }
-      } catch (err) {
-        toggleLoading(false);
-        document.getElementById("btnSubmitAmbil").disabled = false;
-        showToast(err.message, "error");
-      }
+        if (res.success) { showToast(res.message); loadInitialAppData(); switchView('dashboard'); }
+        else { showToast(res.message, "error"); }
+      } catch (err) { toggleLoading(false); showToast(err.message, "error"); }
     }
 
-    async function submitRekodMinyak(e, bypassOdo = false) {
-      if (e) e.preventDefault();
-
-      const payload = pendingOdoPayload || {
+    async function submitRekodMinyak(e) {
+      e.preventDefault();
+      const payload = {
         idPemandu: currentUser.idPemandu,
         idKenderaan: document.getElementById("rekodKenderaan").value,
         idKad: document.getElementById("rekodKadId").value,
@@ -856,537 +393,98 @@
         odometer: document.getElementById("rekodOdometer").value,
         liter: document.getElementById("rekodLiter").value,
         hargaSeunit: document.getElementById("rekodHarga").value,
-        tujuan: document.getElementById("rekodTujuan").value,
-        bypassOdoWarning: bypassOdo
+        noPlatLoaner: document.getElementById("rekodNoPlatLoaner").value.trim()
       };
 
-      if (!payload.idKenderaan) return showToast("Sila pilih kenderaan.", "warning");
-      if (!payload.idKad) return showToast("Sila pilih kad minyak.", "warning");
-      if (!payload.namaStesen) return showToast("Sila taip nama stesen minyak.", "warning");
-
-      toggleLoading(true, "Menyimpan rekod pengisian...");
-      document.getElementById("btnSubmitRekod").disabled = true;
-
+      toggleLoading(true, "Menyimpan...");
       try {
         const res = await callBackendApi("saveFuelTransaction", payload);
         toggleLoading(false);
-        document.getElementById("btnSubmitRekod").disabled = false;
-        pendingOdoPayload = null;
-
-        if (res.warningOdo) {
-          pendingOdoPayload = payload;
-          currentOdoCallbackType = "REKOD";
-          openOdoModal(res.message);
-        } else if (res.success) {
-          showToast(res.message, "success");
-          document.getElementById("formRekodMinyak").reset();
-          loadInitialAppData();
-          switchView('sejarah');
-        } else {
-          showToast(res.message, "error");
-        }
-      } catch (err) {
-        toggleLoading(false);
-        document.getElementById("btnSubmitRekod").disabled = false;
-        showToast(err.message, "error");
-      }
-    }
-
-    function openOdoModal(msg) {
-      document.getElementById("odoModalMessage").innerText = msg;
-      document.getElementById("odoModal").classList.remove("hidden");
-    }
-
-    function closeOdoModal(confirmed) {
-      document.getElementById("odoModal").classList.add("hidden");
-      if (confirmed && pendingOdoPayload) {
-        if (currentOdoCallbackType === "REKOD") {
-          submitRekodMinyak(null, true);
-        }
-      } else {
-        pendingOdoPayload = null;
-      }
+        if (res.success) { showToast(res.message); loadInitialAppData(); switchView('sejarah'); }
+        else { showToast(res.message, "error"); }
+      } catch (err) { toggleLoading(false); showToast(err.message, "error"); }
     }
 
     async function loadHantarCardList() {
       const container = document.getElementById("hantarContainer");
-      container.innerHTML = '<p class="text-slate-400 text-sm">Mencari kad sedang digunakan...</p>';
-
+      container.innerText = "Memuatkan...";
       try {
         const res = await callBackendApi("getActiveCardsByDriver", { idPemandu: currentUser.idPemandu });
-        if (res.success && res.data.length > 0) {
-          let penyeliaOptions = '<option value="">-- Pilih Penyelia/PPP Penerima --</option>';
-          masterData.penyelia.forEach(p => {
-            penyeliaOptions += `<option value="${p.ID_PEMANDU}">${p.NAMA_PEMANDU} (${p.JAWATAN})</option>`;
-          });
-
-          let checkboxCardsHtml = "";
-          res.data.forEach(item => {
-            checkboxCardsHtml += `
-              <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 transition-all">
-                <input type="checkbox" name="hantarKadCheckbox" value="${item.idKad}" class="w-4 h-4 text-amber-600 rounded focus:ring-amber-500" checked>
-                <div class="flex-1">
-                  <h4 class="font-bold text-slate-800 text-sm">KAD: ${item.noKad4Digit} (${item.provider})</h4>
-                  <p class="text-xs text-slate-500 font-medium">Kenderaan: ${item.noPendaftaran} - ${item.namaKenderaan}</p>
-                  <p class="text-[11px] text-blue-600">Diambil: ${formatExactDateTime(item.tarikhAmbil)}</p>
-                </div>
-              </label>
-            `;
-          });
-
+        if (res.success && res.data.length) {
+          let opts = masterData.penyelia.map(p => `<option value="${p.ID_PEMANDU}">${p.NAMA_PEMANDU}</option>`).join("");
+          let cards = res.data.map(i => `<label class="flex items-center gap-2 p-2 bg-slate-50 border rounded"><input type="checkbox" name="hantarCb" value="${i.idKad}" checked><span>${i.noKad4Digit} (${i.noPendaftaran})</span></label>`).join("");
           container.innerHTML = `
-            <form id="formHantarBatch" onsubmit="submitHantarKadBatch(event)" class="space-y-4">
-              <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Pilih Kad Minyak Untuk Dipulangkan *</label>
-                <div class="space-y-2">
-                  ${checkboxCardsHtml}
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Penyelia/PPP Penerima *</label>
-                  <select id="hantarPenyeliaBatch" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none font-medium text-xs">
-                    ${penyeliaOptions}
-                  </select>
-                </div>
-
-                <div>
-                  <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Odometer Pemulangan *</label>
-                  <input type="number" id="hantarOdoBatch" required placeholder="Contoh: 125500" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs font-medium">
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Catatan Pemulangan</label>
-                <input type="text" id="hantarCatatanBatch" placeholder="Tugas selesai / Selesai perjalanan" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-xs">
-              </div>
-
-              <button type="submit" id="btnSubmitHantarBatch" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition-all">
-                <i class="fa-solid fa-rotate-left mr-1"></i> PULANGKAN KAD DIPILIH SEKALIGUS
-              </button>
-            </form>
-          `;
-        } else {
-          container.innerHTML = '<div class="p-8 text-center text-slate-400"><i class="fa-solid fa-folder-open text-3xl mb-2"></i><p>Tiada kad sedang digunakan oleh anda.</p></div>';
-        }
-      } catch (err) {
-        container.innerHTML = `<div class="p-4 text-center text-red-500">${err.message}</div>`;
-      }
+            <form onsubmit="submitHantarBatch(event)" class="space-y-3">
+              <div>${cards}</div>
+              <div><label class="block font-bold mb-1">Penyelia Penerima *</label><select id="hantarPenyelia" required class="w-full p-2 bg-slate-50 border rounded-lg">${opts}</select></div>
+              <div><label class="block font-bold mb-1">Odometer Pemulangan *</label><input type="number" id="hantarOdo" required class="w-full p-2 bg-slate-50 border rounded-lg"></div>
+              <button type="submit" class="w-full py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg">PULANGKAN KAD</button>
+            </form>`;
+        } else { container.innerHTML = '<p class="text-slate-400">Tiada kad aktif digunakan oleh anda.</p>'; }
+      } catch (err) { container.innerHTML = err.message; }
     }
 
-    async function submitHantarKadBatch(e) {
+    async function submitHantarBatch(e) {
       e.preventDefault();
-
-      const checkedBoxes = document.querySelectorAll('input[name="hantarKadCheckbox"]:checked');
-      const selectedKadIds = Array.from(checkedBoxes).map(cb => cb.value);
-
-      const odoVal = document.getElementById('hantarOdoBatch').value;
-      const supervisorVal = document.getElementById('hantarPenyeliaBatch').value;
-      const catatanVal = document.getElementById('hantarCatatanBatch').value;
-
-      if (selectedKadIds.length === 0) return showToast("Sila tanda sekurang-kurangnya SATU kad untuk dipulangkan.", "warning");
-      if (!supervisorVal) return showToast("Sila pilih Penyelia/PPP yang menerima kad.", "warning");
-      if (!odoVal) return showToast("Sila masukkan odometer pemulangan.", "warning");
-
+      const cbs = document.querySelectorAll('input[name="hantarCb"]:checked');
+      const selected = Array.from(cbs).map(c => c.value);
       const payload = {
         idPemandu: currentUser.idPemandu,
-        selectedKadIds: selectedKadIds,
-        idPenyelia: supervisorVal,
-        odometer: odoVal,
-        catatan: catatanVal || "Pemulangan kad disahkan oleh Penyelia/PPP"
+        selectedKadIds: selected,
+        idPenyelia: document.getElementById("hantarPenyelia").value,
+        odometer: document.getElementById("hantarOdo").value
       };
-
-      toggleLoading(true, "Memproses pemulangan kad...");
-      document.getElementById('btnSubmitHantarBatch').disabled = true;
-
+      toggleLoading(true, "Memproses...");
       try {
         const res = await callBackendApi("hantarKadBatch", payload);
         toggleLoading(false);
-        if (res.success) {
-          showToast(res.message, "success");
-          loadHantarCardList();
-          loadInitialAppData();
-        } else {
-          document.getElementById('btnSubmitHantarBatch').disabled = false;
-          showToast(res.message, "error");
-        }
-      } catch (err) {
-        toggleLoading(false);
-        document.getElementById('btnSubmitHantarBatch').disabled = false;
-        showToast(err.message, "error");
-      }
+        if (res.success) { showToast(res.message); loadHantarCardList(); loadInitialAppData(); }
+        else { showToast(res.message, "error"); }
+      } catch (err) { toggleLoading(false); showToast(err.message, "error"); }
     }
 
     async function loadDriverHistory() {
       const tbody = document.getElementById("sejarahTableBody");
-      tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-400">Memuatkan sejarah bulan ini...</td></tr>';
-
+      tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center text-slate-400">Memuatkan...</td></tr>';
       try {
         const res = await callBackendApi("getDriverHistory", { idPemandu: currentUser.idPemandu });
-        if (res.success) {
-          document.getElementById("sejarahMonthLabel").innerText = `Rekod Pengisian: ${res.currentMonthLabel}`;
-          fullSejarahData = res.data || [];
-          currentPage = 1;
-          renderPaginatedSejarah();
-        } else {
-          tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-red-500">Ralat muat sejarah.</td></tr>';
-        }
-      } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-red-500">${err.message}</td></tr>`;
-      }
+        if (res.success && res.data.length) {
+          tbody.innerHTML = res.data.map(r => `
+            <tr class="hover:bg-slate-50">
+              <td class="p-2">${r.TARIKH_ISI}</td><td class="p-2 font-bold">${r.NO_PENDAFTARAN}</td>
+              <td class="p-2">${r.NAMA_STESEN}</td><td class="p-2">${r.ODOMETER}</td>
+              <td class="p-2 text-blue-600 font-bold">${r.LITER} L</td><td class="p-2 text-emerald-600 font-bold">RM ${Number(r.JUMLAH_RM).toFixed(2)}</td>
+            </tr>`).join("");
+        } else { tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center text-slate-400">Tiada sejarah.</td></tr>'; }
+      } catch (err) { tbody.innerHTML = `<tr><td colspan="6" class="p-3 text-center text-red-500">${err.message}</td></tr>`; }
     }
 
-    function renderPaginatedSejarah() {
-      const tbody = document.getElementById("sejarahTableBody");
-      const pageIndicator = document.getElementById("pageIndicator");
-      const btnPrev = document.getElementById("btnPrevPage");
-      const btnNext = document.getElementById("btnNextPage");
-
-      if (fullSejarahData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400">Tiada sejarah rekod pengisian minyak bagi bulan ini.</td></tr>';
-        pageIndicator.innerText = "Halaman 0 dari 0";
-        btnPrev.disabled = true;
-        btnNext.disabled = true;
-        return;
-      }
-
-      const totalPages = Math.ceil(fullSejarahData.length / itemsPerPage);
-      if (currentPage < 1) currentPage = 1;
-      if (currentPage > totalPages) currentPage = totalPages;
-
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-      const currentItems = fullSejarahData.slice(startIndex, endIndex);
-
-      tbody.innerHTML = "";
-      currentItems.forEach(r => {
-        const formattedDateTime = formatExactDateTime(r.TARIKH_ISI, r.MASA_ISI);
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-50">
-            <td class="p-3 font-mono text-xs">${formattedDateTime}</td>
-            <td class="p-3 font-semibold">${r.NO_PENDAFTARAN}</td>
-            <td class="p-3">${r.NO_KAD_4_DIGIT} (${r.PROVIDER})</td>
-            <td class="p-3 font-medium text-slate-700">${r.NAMA_STESEN}</td>
-            <td class="p-3 font-mono">${r.ODOMETER}</td>
-            <td class="p-3 font-bold text-blue-600">${r.LITER} L</td>
-            <td class="p-3 font-bold text-emerald-600">RM ${Number(r.JUMLAH_RM).toFixed(2)}</td>
-          </tr>
-        `;
-      });
-
-      pageIndicator.innerText = `Halaman ${currentPage} dari ${totalPages} (${fullSejarahData.length} rekod)`;
-      btnPrev.disabled = currentPage === 1;
-      btnNext.disabled = currentPage === totalPages;
+    function renderStats(s) {
+      if (!s) return;
+      document.getElementById("statSimpanan").innerText = s.kadSimpanan || 0;
+      document.getElementById("statDigunakan").innerText = s.kadDigunakan || 0;
+      document.getElementById("statKenderaan").innerText = s.jumlahKenderaan || 0;
+      document.getElementById("statTransaksi").innerText = s.jumlahTransaksi || 0;
     }
 
-    function changePage(direction) {
-      currentPage += direction;
-      renderPaginatedSejarah();
-    }
-
-    async function loadReportData() {
-      toggleLoading(true, "Membina laporan & graf analitik...");
-
-      const filters = {
-        bulan: document.getElementById('reportFilterMonth').value,
-        tahun: document.getElementById('reportFilterYear').value
-      };
-
-      try {
-        const res = await callBackendApi("getReports", { filters: filters });
-        toggleLoading(false);
-        if (res.success) {
-          document.getElementById("repTotalTx").innerText = res.summary.totalTransaksi;
-          document.getElementById("repTotalLiter").innerText = `${res.summary.totalLiter} L`;
-          document.getElementById("repTotalRM").innerText = `RM ${res.summary.totalRM}`;
-
-          renderFuelChart(res.chartData);
-
-          globalReportAnalytics = res.vehicleAnalytics || [];
-          renderVehicleAnalyticsTable(globalReportAnalytics);
-
-          fullReportData = res.data || [];
-          currentReportPage = 1;
-          renderPaginatedReport();
-        }
-      } catch (err) {
-        toggleLoading(false);
-        showToast(err.message, "error");
-      }
-    }
-
-    function renderVehicleAnalyticsTable(analyticsList) {
-      const tbody = document.getElementById("vehicleAnalyticsTableBody");
-      
-      if (analyticsList && analyticsList.length > 0) {
-        tbody.innerHTML = "";
-        analyticsList.forEach(v => {
-          let badgeColor = "bg-emerald-100 text-emerald-800 border-emerald-300";
-          if (v.statusKecekapan === "SEDERHANA") badgeColor = "bg-amber-100 text-amber-800 border-amber-300";
-          else if (v.statusKecekapan === "TIDAK CEKAP") badgeColor = "bg-red-100 text-red-800 border-red-300";
-          else if (v.statusKecekapan === "TIDAK BUKTI") badgeColor = "bg-slate-100 text-slate-600 border-slate-300";
-
-          tbody.innerHTML += `
-            <tr class="hover:bg-slate-50 font-medium">
-              <td class="p-2.5 font-bold text-slate-800">${v.noPendaftaran}</td>
-              <td class="p-2.5 text-slate-600">${v.namaKenderaan}</td>
-              <td class="p-2.5 font-bold font-mono text-slate-700">${v.distanceKm > 0 ? v.distanceKm + ' KM' : '-'}</td>
-              <td class="p-2.5 font-bold text-blue-600">${v.totalLiter} L</td>
-              <td class="p-2.5 font-bold text-emerald-600">RM ${v.totalRM.toFixed(2)}</td>
-              <td class="p-2.5 font-extrabold font-mono text-indigo-700">${v.kmPerLiter > 0 ? v.kmPerLiter + ' KM/L' : '-'}</td>
-              <td class="p-2.5 font-bold font-mono text-slate-700">${v.rmPerKm > 0 ? 'RM ' + v.rmPerKm : '-'}</td>
-              <td class="p-2.5">
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-black border ${badgeColor}">
-                  ${v.statusKecekapan}
-                </span>
-              </td>
-            </tr>
-          `;
-        });
-      } else {
-        tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-slate-400">Tiada rekod penggunaan kenderaan bagi bulan ini.</td></tr>`;
-      }
-    }
-
-    function exportToCSV() {
-      if (!fullReportData || fullReportData.length === 0) {
-        return showToast("Tiada data untuk dieksport.", "warning");
-      }
-
-      const month = document.getElementById('reportFilterMonth').value;
-      const year = document.getElementById('reportFilterYear').value;
-
-      let csvContent = "data:text/csv;charset=utf-8,";
-      csvContent += "ID Transaksi,Tarikh,Masa,Pemandu,No Plat,No Kad,Provider,Stesen,Odometer,Liter,Jumlah RM,Tujuan\n";
-
-      fullReportData.forEach(r => {
-        const row = [
-          r.ID_TRANSAKSI,
-          r.TARIKH_ISI,
-          r.MASA_ISI,
-          `"${r.NAMA_PEMANDU}"`,
-          r.NO_PENDAFTARAN,
-          r.NO_KAD_4_DIGIT,
-          r.PROVIDER,
-          `"${r.NAMA_STESEN}"`,
-          r.ODOMETER,
-          r.LITER,
-          r.JUMLAH_RM,
-          `"${r.TUJUAN || '-'}"`
-        ].join(",");
-        csvContent += row + "\n";
-      });
-
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `Laporan_Minyak_Hospital_Kemaman_${month}_${year}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      showToast("Laporan berjaya dieksport ke format Excel (CSV)!", "success");
-    }
-
-    function printPDFReport() {
-      window.print();
-    }
-
-    function renderPaginatedReport() {
-      const tbody = document.getElementById("laporanTableBody");
-      const pageIndicator = document.getElementById("reportPageIndicator");
-      const btnPrev = document.getElementById("btnReportPrevPage");
-      const btnNext = document.getElementById("btnReportNextPage");
-
-      if (fullReportData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-slate-400">Tiada rekod pengisian minyak pada bulan ini.</td></tr>';
-        pageIndicator.innerText = "Halaman 0 dari 0";
-        btnPrev.disabled = true;
-        btnNext.disabled = true;
-        return;
-      }
-
-      const totalPages = Math.ceil(fullReportData.length / itemsPerPage);
-      if (currentReportPage < 1) currentReportPage = 1;
-      if (currentReportPage > totalPages) currentReportPage = totalPages;
-
-      const startIndex = (currentReportPage - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-      const currentItems = fullReportData.slice(startIndex, endIndex);
-
-      tbody.innerHTML = "";
-      currentItems.forEach(r => {
-        const formattedDateTime = formatExactDateTime(r.TARIKH_ISI, r.MASA_ISI);
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-50">
-            <td class="p-3 font-mono text-xs">${formattedDateTime}</td>
-            <td class="p-3 font-medium">${r.NAMA_PEMANDU}</td>
-            <td class="p-3 font-semibold text-slate-800">${r.NO_PENDAFTARAN}</td>
-            <td class="p-3">${r.NO_KAD_4_DIGIT} (${r.PROVIDER})</td>
-            <td class="p-3 font-medium text-slate-700">${r.NAMA_STESEN}</td>
-            <td class="p-3 font-mono">${r.ODOMETER}</td>
-            <td class="p-3 text-blue-600 font-bold">${r.LITER} L</td>
-            <td class="p-3 text-emerald-600 font-bold">RM ${Number(r.JUMLAH_RM).toFixed(2)}</td>
-          </tr>
-        `;
-      });
-
-      pageIndicator.innerText = `Halaman ${currentReportPage} dari ${totalPages} (${fullReportData.length} rekod)`;
-      btnPrev.disabled = currentReportPage === 1;
-      btnNext.disabled = currentReportPage === totalPages;
-    }
-
-    function changeReportPage(direction) {
-      currentReportPage += direction;
-      renderPaginatedReport();
-    }
-
-    function renderFuelChart(chartData) {
-      const ctx = document.getElementById('fuelUsageChart').getContext('2d');
-
-      if (fuelChartInstance) {
-        fuelChartInstance.destroy();
-      }
-
-      fuelChartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: chartData.labels,
-          datasets: [
-            {
-              label: 'Ambulans (Liter)',
-              data: chartData.ambulansLiter,
-              borderColor: '#ef4444',
-              backgroundColor: 'rgba(239, 68, 68, 0.1)',
-              borderWidth: 2,
-              tension: 0.3,
-              fill: true,
-              pointRadius: 3
-            },
-            {
-              label: 'Kenderaan Jabatan (Liter)',
-              data: chartData.jabatanLiter,
-              borderColor: '#2563eb',
-              backgroundColor: 'rgba(37, 99, 235, 0.1)',
-              borderWidth: 2,
-              tension: 0.3,
-              fill: true,
-              pointRadius: 3
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            x: {
-              grid: { display: false },
-              ticks: { font: { size: 10 } }
-            },
-            y: {
-              beginAtZero: true,
-              ticks: { font: { size: 10 } }
-            }
-          }
-        }
-      });
-    }
-
-    function renderDashboardStats(stats) {
-      if (!stats) return;
-      document.getElementById("statSimpanan").innerText = stats.kadSimpanan;
-      document.getElementById("statDigunakan").innerText = stats.kadDigunakan;
-      document.getElementById("statKenderaan").innerText = stats.jumlahKenderaan;
-      document.getElementById("statAmbulans").innerText = stats.jumlahAmbulans || 0;
-      document.getElementById("statJabatan").innerText = stats.jumlahJabatan || 0;
-      document.getElementById("statTransaksi").innerText = stats.jumlahTransaksi;
-    }
-
-    function renderOutstandingCards(list) {
+    function renderOutstanding(list) {
       const tbody = document.getElementById("outstandingTableBody");
-      
-      if (list && list.length > 0) {
-        tbody.innerHTML = "";
-        list.forEach(item => {
-          tbody.innerHTML += `
-            <tr class="hover:bg-slate-50 font-medium">
-              <td class="p-3 font-bold text-slate-800">${item.noPendaftaran} <span class="text-[10px] text-slate-400 block">${item.namaKenderaan}</span></td>
-              <td class="p-3 text-blue-600 font-bold">${item.namaPemandu} <span class="text-[10px] text-slate-400 font-mono block">ID: ${item.idPemandu}</span></td>
-              <td class="p-3"><span class="px-2 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg border border-amber-200 inline-block">${item.noKad4Digit} (${item.provider})</span></td>
-              <td class="p-3 font-mono text-slate-600">${formatExactDateTime(item.tarikhAmbil)}</td>
-              <td class="p-3 text-slate-700">${item.namaPenyerah}</td>
-            </tr>
-          `;
-        });
-      } else {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="5" class="p-6 text-center text-emerald-600 font-bold">
-              <i class="fa-solid fa-circle-check text-xl mr-2"></i> Semua kad minyak berada dalam simpanan. Tiada kad yang belum dipulangkan.
-            </td>
-          </tr>
-        `;
-      }
+      if (list && list.length) {
+        tbody.innerHTML = list.map(i => `
+          <tr><td class="p-2 font-bold">${i.noPendaftaran}</td><td class="p-2 text-blue-600 font-bold">${i.namaPemandu}</td><td class="p-2">${i.noKad4Digit} (${i.provider})</td><td class="p-2">${i.tarikhAmbil}</td></tr>
+        `).join("");
+      } else { tbody.innerHTML = '<tr><td colspan="4" class="p-3 text-center text-emerald-600 font-bold">Semua kad berada dalam simpanan.</td></tr>'; }
     }
 
-    function renderServiceAlerts(alerts) {
-      const container = document.getElementById("serviceAlertContainer");
-      const listContainer = document.getElementById("serviceAlertList");
-
-      if (alerts && alerts.length > 0) {
-        container.classList.remove("hidden");
-        listContainer.innerHTML = "";
-
-        alerts.forEach(k => {
-          listContainer.innerHTML += `
-            <div class="bg-white p-3.5 rounded-2xl border border-amber-200 flex items-center justify-between shadow-sm">
-              <div>
-                <h4 class="font-extrabold text-amber-900 text-sm">${k.NO_PENDAFTARAN} - ${k.NAMA_KENDERAAN}</h4>
-                <p class="text-xs text-slate-600 mt-0.5">Odometer Semasa: <b class="text-slate-800 font-mono">${k.latestOdo} KM</b></p>
-                <p class="text-[11px] text-amber-700 font-semibold">Sasaran Servis: <b class="font-mono">${k.targetServiceOdo} KM</b></p>
-              </div>
-              <div class="text-right">
-                <span class="px-2.5 py-1 bg-red-100 text-red-700 font-black rounded-lg text-xs border border-red-200 inline-block">
-                  Baki ${k.bakiKmServis} KM
-                </span>
-              </div>
-            </div>
-          `;
-        });
-      } else {
-        container.classList.add("hidden");
-      }
-    }
-
-    function switchView(viewName) {
+    function switchView(vName) {
       document.querySelectorAll(".view-panel").forEach(el => el.classList.add("hidden"));
-      document.querySelectorAll(".nav-btn").forEach(el => {
-        el.classList.remove("bg-blue-600", "text-white");
-        el.classList.add("text-slate-300");
-      });
+      document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("bg-blue-600", "text-white"));
 
-      const activeView = document.getElementById(`view-${viewName}`);
-      const activeNav = document.getElementById(`nav-${viewName}`);
+      document.getElementById(`view-${vName}`).classList.remove("hidden");
+      document.getElementById(`nav-${vName}`).classList.add("bg-blue-600", "text-white");
 
-      if (activeView) activeView.classList.remove("hidden");
-      if (activeNav) {
-        activeNav.classList.add("bg-blue-600", "text-white");
-        activeNav.classList.remove("text-slate-300");
-      }
-
-      if (viewName === 'hantar') loadHantarCardList();
-      if (viewName === 'sejarah') loadDriverHistory();
-      if (viewName === 'laporan') loadReportData();
-
-      document.getElementById("sidebarNav").classList.add("-translate-x-full");
-    }
-
-    function toggleMobileMenu() {
-      document.getElementById("sidebarNav").classList.toggle("-translate-x-full");
+      if (vName === 'hantar') loadHantarCardList();
+      if (vName === 'sejarah') loadDriverHistory();
     }
   </script>
 </body>
