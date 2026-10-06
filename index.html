@@ -144,12 +144,17 @@
               <h3 id="statDigunakan" class="text-2xl font-black text-slate-800">0</h3>
             </div>
 
+            <!-- KAD KENDERAAN DENGAN PECAHAN -->
             <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Kenderaan</span>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Kenderaan Hospital</span>
                 <span class="p-2 bg-blue-50 text-blue-600 rounded-xl"><i class="fa-solid fa-truck-medical text-sm"></i></span>
               </div>
               <h3 id="statKenderaan" class="text-2xl font-black text-slate-800">0</h3>
+              <div class="pt-2 border-t border-slate-100 mt-2 flex items-center justify-between text-[11px] font-semibold">
+                <span class="text-red-600 flex items-center gap-1"><i class="fa-solid fa-ambulance"></i> Ambulans: <b id="statAmbulans" class="text-slate-800">0</b></span>
+                <span class="text-blue-600 flex items-center gap-1"><i class="fa-solid fa-car"></i> Jabatan: <b id="statJabatan" class="text-slate-800">0</b></span>
+              </div>
             </div>
 
             <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
@@ -297,8 +302,8 @@
   </div>
 
   <script>
-    // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbw-KHoPcRm5WQLMFf4agL0s80rnL4AZzC8bVfsKZfjJNEeLYTBjXN-wbg7_2L-lgXq9IA/exec";
+    // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA DENGAN KHAS AKHIRAN /exec
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbxwSrBHXCS-aatPX1duSaSv0ySlFIG90MgFtRXz5ZMOr0etmSQWWEaKP32jHcanGNAf1w/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], penyelia: [], stats: {} };
@@ -445,7 +450,7 @@
         idPemandu: currentUser.idPemandu,
         idKenderaan: document.getElementById("ambilKenderaan").value,
         selectedKadIds: selected,
-        idPenyelia: document.getElementById("ambilPenyelia").value,
+        idPenylia: document.getElementById("ambilPenyelia").value,
         tujuan: document.getElementById("ambilTujuan").value,
         noPlatLoaner: document.getElementById("ambilNoPlatLoaner").value.trim()
       };
@@ -542,6 +547,8 @@
       document.getElementById("statSimpanan").innerText = s.kadSimpanan || 0;
       document.getElementById("statDigunakan").innerText = s.kadDigunakan || 0;
       document.getElementById("statKenderaan").innerText = s.jumlahKenderaan || 0;
+      document.getElementById("statAmbulans").innerText = s.jumlahAmbulans || 0;
+      document.getElementById("statJabatan").innerText = s.jumlahJabatan || 0;
       document.getElementById("statTransaksi").innerText = s.jumlahTransaksi || 0;
     }
 
