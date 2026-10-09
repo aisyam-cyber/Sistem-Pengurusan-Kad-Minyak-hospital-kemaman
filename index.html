@@ -2,15 +2,15 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem Kad Minyak - Hospital Kemaman</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sistem Pengurusan Kad Minyak - Hospital Kemaman</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); }
     .sidebar-gradient { background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); }
     #loadingOverlay {
       display: none;
@@ -30,14 +30,11 @@
     }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-800 min-h-screen flex flex-col antialiased">
+<body class="bg-slate-900 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-blue-500 selection:text-white">
 
-  <!-- OVERLAY LOADING -->
+  <!-- LOADING OVERLAY -->
   <div id="loadingOverlay" class="flex flex-col items-center">
-    <div class="relative flex items-center justify-center mb-4">
-      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
-      <i class="fa-solid fa-gas-pump text-white text-xl absolute"></i>
-    </div>
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
     <p id="loadingText" class="text-white font-medium text-sm tracking-wide">Memproses data...</p>
   </div>
 
@@ -60,13 +57,13 @@
   </div>
 
   <!-- PAGE: LOGIN -->
-  <section id="loginSection" class="flex-1 flex items-center justify-center p-4 bg-slate-900">
+  <section id="loginSection" class="flex-1 flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-800 via-slate-900 to-black">
     <div class="max-w-md w-full glass-card p-8 rounded-3xl shadow-2xl border border-white/20 relative overflow-hidden">
       <div class="text-center mb-8">
         <div class="inline-flex p-4 rounded-2xl bg-blue-600/10 text-blue-600 mb-3 border border-blue-500/20 shadow-inner">
           <i class="fa-solid fa-gas-pump text-3xl"></i>
         </div>
-        <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">SYSTEM KAD MINYAK</h1>
+        <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">KAD MINYAK KENDERAAN</h1>
         <p class="text-xs font-bold tracking-widest text-blue-600 uppercase mt-1">Hospital Kemaman</p>
       </div>
 
@@ -75,7 +72,7 @@
           <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">ID Pemandu / Penyelia</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400"><i class="fa-solid fa-id-card"></i></span>
-            <input type="text" id="loginId" required placeholder="Contoh: DRV5469" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+            <input type="text" id="loginId" required placeholder="Contoh: DRV5469 / SUP5055" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
           </div>
         </div>
 
@@ -87,7 +84,7 @@
           </div>
         </div>
 
-        <button type="submit" id="loginSubmitBtn" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl text-sm shadow-lg transition flex items-center justify-center gap-2">
+        <button type="submit" id="loginSubmitBtn" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl text-sm shadow-lg shadow-blue-500/25 transition flex items-center justify-center gap-2">
           <span>LOG MASUK</span>
           <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
         </button>
@@ -96,7 +93,7 @@
   </section>
 
   <!-- MAIN APP SECTION -->
-  <div id="appSection" class="hidden flex-1 flex flex-col bg-slate-100 min-h-screen">
+  <div id="appSection" class="hidden flex-1 flex flex-col bg-slate-100">
     <header class="bg-slate-900 border-b border-slate-800 text-white px-6 py-3.5 shadow-md flex items-center justify-between sticky top-0 z-40 no-print">
       <div class="flex items-center gap-3">
         <button onclick="toggleMobileMenu()" class="md:hidden text-2xl text-slate-300 focus:outline-none">
@@ -118,43 +115,39 @@
         </div>
         <button onclick="handleLogout()" class="px-3.5 py-1.5 bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-red-500/30">
           <i class="fa-solid fa-right-from-bracket"></i>
-          <span>Log Keluar</span>
+          <span class="hidden md:inline">Log Keluar</span>
         </button>
       </div>
     </header>
 
-    <div class="flex-1 flex max-w-7xl w-full mx-auto p-4 md:p-6 gap-6 relative">
-      <!-- FIXED SIDEBAR FOR PC / MOBILE TOGGLE -->
-      <aside id="sidebarNav" class="sidebar-gradient text-slate-300 w-64 p-3 rounded-2xl border border-slate-800 flex flex-col gap-1.5 shadow-xl fixed md:static inset-y-0 left-0 z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out h-full md:h-fit no-print">
-        <div class="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 flex justify-between items-center">
-          <span>Menu Utama</span>
-          <button onclick="toggleMobileMenu()" class="md:hidden text-slate-400"><i class="fa-solid fa-xmark text-base"></i></button>
-        </div>
-        <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-white bg-blue-600 shadow-md">
+    <div class="flex-1 flex flex-col md:flex-row max-w-7xl w-full mx-auto p-4 md:p-6 gap-6">
+      <aside id="sidebarNav" class="sidebar-gradient text-slate-300 w-full md:w-60 p-3 rounded-2xl border border-slate-800 flex md:flex-col gap-1.5 overflow-x-auto shadow-xl h-fit no-print">
+        <div class="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 hidden md:block">Menu Utama</div>
+        <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn flex-1 md:w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-white bg-blue-600 shadow-md shadow-blue-600/30">
           <i class="fa-solid fa-chart-line w-4"></i> Dashboard
         </button>
-        <button onclick="switchView('ambil')" id="nav-ambil" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+        <button onclick="switchView('ambil')" id="nav-ambil" class="nav-btn flex-1 md:w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
           <i class="fa-solid fa-id-card w-4"></i> Ambil Kad
         </button>
-        <button onclick="switchView('hantar')" id="nav-hantar" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+        <button onclick="switchView('hantar')" id="nav-hantar" class="nav-btn flex-1 md:w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
           <i class="fa-solid fa-rotate-left w-4"></i> Hantar Kad
         </button>
-        <button onclick="switchView('rekod')" id="nav-rekod" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+        <button onclick="switchView('rekod')" id="nav-rekod" class="nav-btn flex-1 md:w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
           <i class="fa-solid fa-gas-pump w-4"></i> Rekod Minyak
         </button>
-        <button onclick="switchView('sejarah')" id="nav-sejarah" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+        <button onclick="switchView('sejarah')" id="nav-sejarah" class="nav-btn flex-1 md:w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
           <i class="fa-solid fa-clock-rotate-left w-4"></i> Sejarah Rekod
         </button>
-        <button onclick="switchView('laporan')" id="nav-laporan" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+        <button onclick="switchView('laporan')" id="nav-laporan" class="nav-btn flex-1 md:w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
           <i class="fa-solid fa-file-invoice-dollar w-4"></i> Laporan & Graf
         </button>
       </aside>
 
-      <main class="flex-1 space-y-6 w-full overflow-hidden">
+      <main class="flex-1 space-y-6 overflow-y-auto">
         
         <!-- DASHBOARD -->
         <div id="view-dashboard" class="view-panel space-y-6">
-          <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white p-6 rounded-3xl shadow-xl border border-blue-500/20">
+          <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white p-6 rounded-3xl shadow-xl shadow-blue-500/10 border border-blue-500/20 relative overflow-hidden">
             <h2 id="dashWelcomeTitle" class="text-xl font-extrabold tracking-tight">Selamat Datang, -</h2>
             <p id="dashUserSub" class="text-xs text-blue-100 font-medium mt-1">ID Pengguna: -</p>
           </div>
@@ -168,7 +161,7 @@
           </div>
 
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Kad Simpanan</span>
                 <span class="p-2 bg-emerald-50 text-emerald-600 rounded-xl"><i class="fa-solid fa-box-archive text-sm"></i></span>
@@ -176,7 +169,7 @@
               <h3 id="statSimpanan" class="text-2xl font-black text-slate-800">0</h3>
             </div>
 
-            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Kad Digunakan</span>
                 <span class="p-2 bg-amber-50 text-amber-600 rounded-xl"><i class="fa-solid fa-hand-holding-hand text-sm"></i></span>
@@ -184,7 +177,7 @@
               <h3 id="statDigunakan" class="text-2xl font-black text-slate-800">0</h3>
             </div>
 
-            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
               <div class="flex items-center justify-between mb-1">
                 <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Kenderaan Hospital</span>
                 <span class="p-2 bg-blue-50 text-blue-600 rounded-xl"><i class="fa-solid fa-truck-medical text-sm"></i></span>
@@ -196,7 +189,7 @@
               </div>
             </div>
 
-            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Isian Saya</span>
                 <span class="p-2 bg-purple-50 text-purple-600 rounded-xl"><i class="fa-solid fa-receipt text-sm"></i></span>
@@ -532,8 +525,8 @@
   </div>
 
   <script>
-    // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwtI7eyIc07MQ8Kfyrc0WQ_BTCiRsDcdJmICM11xJDKnpCKRI2I92G79ZRVYdhffj8/exec";
+    // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT BERAKHIR /exec
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbxp0HkCwLWi1YcqmB351bYIy42RCFa-prS8_UjvQ7ijakf14Fyl3hUkINxM_zXtkRV3Tw/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -1136,10 +1129,7 @@
       if (viewName === 'sejarah') loadDriverHistory();
       if (viewName === 'laporan') loadReportData();
 
-      // Hanya sembunyikan sidebar pada paparan telefon bimbit
-      if (window.innerWidth < 768) {
-        document.getElementById("sidebarNav").classList.add("-translate-x-full");
-      }
+      document.getElementById("sidebarNav").classList.add("-translate-x-full");
     }
 
     function toggleMobileMenu() {
