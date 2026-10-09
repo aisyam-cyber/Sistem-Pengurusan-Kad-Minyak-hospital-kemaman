@@ -94,9 +94,8 @@
     </div>
   </section>
 
-  <!-- MAIN APP SECTION (FLUSH FLUID LAYOUT) -->
+  <!-- MAIN APP SECTION -->
   <div id="appSection" class="hidden flex-1 flex flex-col bg-slate-100 min-h-screen">
-    <!-- TOP HEADER -->
     <header class="bg-slate-900 border-b border-slate-800 text-white px-6 py-3.5 shadow-md flex items-center justify-between sticky top-0 z-40 no-print">
       <div class="flex items-center gap-3">
         <button onclick="toggleMobileMenu()" class="md:hidden text-2xl text-slate-300 focus:outline-none">
@@ -123,10 +122,10 @@
       </div>
     </header>
 
-    <!-- CONTAINER TERIKAT SEPERTI GAMBAR (SIDEBAR RAPAT DENGAN KANDUNGAN) -->
+    <!-- FLUSH LAYOUT CONTAINER -->
     <div class="flex-1 flex w-full relative">
       
-      <!-- SIDEBAR SIDEBAR TERIKAT RAPAT -->
+      <!-- SIDEBAR -->
       <aside id="sidebarNav" class="bg-slate-900 text-slate-300 w-64 min-w-[16rem] p-4 flex flex-col gap-2 shadow-2xl fixed md:static inset-y-0 left-0 z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out border-r border-slate-800 no-print">
         <div class="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 flex justify-between items-center md:hidden">
           <span>Menu Utama</span>
@@ -155,7 +154,7 @@
         </nav>
       </aside>
 
-      <!-- MAIN CONTENT CONTAINER (FLUSH TO SIDEBAR) -->
+      <!-- MAIN CONTENT AREA -->
       <main class="flex-1 p-6 space-y-6 overflow-x-hidden bg-slate-100 min-w-0">
         
         <!-- DASHBOARD -->
@@ -422,7 +421,7 @@
           </div>
         </div>
 
-        <!-- LAPORAN & GRAF (SAMA SEPERTI GAMBAR CONTOH) -->
+        <!-- LAPORAN & GRAF -->
         <div id="view-laporan" class="view-panel space-y-6">
           <div id="printableReportArea" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-6">
             
@@ -471,19 +470,19 @@
             <div id="reportSummary" class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="p-5 bg-slate-50 border border-slate-200/80 rounded-2xl">
                 <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">JUMLAH ISIAN TRANSAKSI</p>
-                <h4 id="repTotalTx" class="text-3xl font-black text-slate-800 mt-1">22</h4>
+                <h4 id="repTotalTx" class="text-3xl font-black text-slate-800 mt-1">0</h4>
               </div>
               <div class="p-5 bg-slate-50 border border-slate-200/80 rounded-2xl">
                 <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">JUMLAH PENGGUNAAN LITER</p>
-                <h4 id="repTotalLiter" class="text-3xl font-black text-blue-600 mt-1">535.47 L</h4>
+                <h4 id="repTotalLiter" class="text-3xl font-black text-blue-600 mt-1">0.00 L</h4>
               </div>
               <div class="p-5 bg-slate-50 border border-slate-200/80 rounded-2xl">
                 <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">JUMLAH KOS (RM)</p>
-                <h4 id="repTotalRM" class="text-3xl font-black text-emerald-600 mt-1">RM 2453.15</h4>
+                <h4 id="repTotalRM" class="text-3xl font-black text-emerald-600 mt-1">RM 0.00</h4>
               </div>
             </div>
 
-            <!-- JADUAL ANALITIK -->
+            <!-- JADUAL ANALITIK KECEKAPAN -->
             <div class="bg-slate-50 p-4 border border-slate-200/80 rounded-2xl space-y-3">
               <div class="flex items-center justify-between">
                 <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
@@ -527,6 +526,7 @@
               </div>
             </div>
 
+            <!-- SENARAI TRANSAKSI DENGAN PAGINATION (10 DATA / PAGE) -->
             <div class="overflow-x-auto pt-2 space-y-3">
               <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">SENARAI TRANSAKSI MINYAK BULAN INI</h4>
               <table class="w-full text-left border-collapse text-xs">
@@ -546,7 +546,21 @@
                   <tr><td colspan="8" class="p-4 text-center text-slate-400">Tiada rekod dipaparkan.</td></tr>
                 </tbody>
               </table>
+
+              <!-- PAGINATION CONTROLS BAGI SENARAI TRANSAKSI MINYAK BULAN INI -->
+              <div id="reportPaginationControls" class="flex items-center justify-between pt-3 text-xs font-semibold no-print border-t border-slate-200">
+                <span id="reportPageIndicator" class="text-slate-500">Halaman 1 dari 1</span>
+                <div class="flex items-center gap-2">
+                  <button id="btnReportPrevPage" onclick="changeReportPage(-1)" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fa-solid fa-chevron-left mr-1"></i> Sebelumnya
+                  </button>
+                  <button id="btnReportNextPage" onclick="changeReportPage(1)" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    Seterusnya <i class="fa-solid fa-chevron-right ml-1"></i>
+                  </button>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
 
@@ -555,8 +569,8 @@
   </div>
 
   <script>
-    // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT BERAKHIR /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzKws7wHyeQFdCB40WXbJctRA2QL0olCtsOyn_B-Ixi2mSFdeULCg8g0HnoTuecnLRO_w/exec";
+    // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbyzQQBFI2f5KMdhIv5QzsoL5JCZtno6WdfrCiEEVKBK2v4SUlq6VWFmPFoN2F8CNslCLw/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -1013,6 +1027,7 @@
           renderFuelChart(res.chartData);
           renderVehicleAnalyticsTable(res.vehicleAnalytics);
           fullReportData = res.data || [];
+          currentReportPage = 1;
           renderPaginatedReport();
         }
       } catch (err) {
@@ -1061,24 +1076,53 @@
 
     function printPDFReport() { window.print(); }
 
+    /* FUNGSI UTAMA PAGINATION SENARAI TRANSAKSI MINYAK BULAN INI (10 DATA PER PAGE) */
     function renderPaginatedReport() {
       const tbody = document.getElementById("laporanTableBody");
-      if (fullReportData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-slate-400">Tiada rekod pengisian minyak.</td></tr>';
+      const pageIndicator = document.getElementById("reportPageIndicator");
+      const btnPrev = document.getElementById("btnReportPrevPage");
+      const btnNext = document.getElementById("btnReportNextPage");
+
+      if (!fullReportData || fullReportData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-slate-400 font-medium">Tiada rekod pengisian minyak dipaparkan.</td></tr>';
+        pageIndicator.innerText = "Halaman 0 dari 0";
+        btnPrev.disabled = true;
+        btnNext.disabled = true;
         return;
       }
-      tbody.innerHTML = fullReportData.slice(0, 10).map(r => `
-        <tr class="hover:bg-slate-50">
-          <td class="p-3 font-mono text-xs">${formatExactDateTime(r.TARIKH_ISI, r.MASA_ISI)}</td>
-          <td class="p-3 font-medium">${r.NAMA_PEMANDU}</td>
-          <td class="p-3 font-semibold text-slate-800">${r.NO_PENDAFTARAN}</td>
-          <td class="p-3">${r.NO_KAD_4_DIGIT} (${r.PROVIDER})</td>
-          <td class="p-3 font-medium text-slate-700">${r.NAMA_STESEN}</td>
-          <td class="p-3 font-mono">${r.ODOMETER}</td>
-          <td class="p-3 text-blue-600 font-bold">${r.LITER} L</td>
-          <td class="p-3 text-emerald-600 font-bold">RM ${Number(r.JUMLAH_RM).toFixed(2)}</td>
-        </tr>
-      `).join("");
+
+      const totalPages = Math.ceil(fullReportData.length / itemsPerPage);
+      if (currentReportPage < 1) currentReportPage = 1;
+      if (currentReportPage > totalPages) currentReportPage = totalPages;
+
+      const startIndex = (currentReportPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const currentItems = fullReportData.slice(startIndex, endIndex);
+
+      tbody.innerHTML = "";
+      currentItems.forEach(r => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-3 font-mono text-xs">${formatExactDateTime(r.TARIKH_ISI, r.MASA_ISI)}</td>
+            <td class="p-3 font-medium text-slate-800">${r.NAMA_PEMANDU}</td>
+            <td class="p-3 font-bold text-slate-900">${r.NO_PENDAFTARAN}</td>
+            <td class="p-3"><span class="px-2 py-0.5 bg-slate-100 text-slate-700 font-mono font-bold rounded">${r.NO_KAD_4_DIGIT} (${r.PROVIDER})</span></td>
+            <td class="p-3 font-medium text-slate-700">${r.NAMA_STESEN}</td>
+            <td class="p-3 font-mono text-slate-800">${r.ODOMETER} KM</td>
+            <td class="p-3 text-blue-600 font-bold">${r.LITER} L</td>
+            <td class="p-3 text-emerald-600 font-black">RM ${Number(r.JUMLAH_RM).toFixed(2)}</td>
+          </tr>
+        `;
+      });
+
+      pageIndicator.innerText = `Halaman ${currentReportPage} dari ${totalPages} (${fullReportData.length} rekod)`;
+      btnPrev.disabled = (currentReportPage === 1);
+      btnNext.disabled = (currentReportPage === totalPages);
+    }
+
+    function changeReportPage(direction) {
+      currentReportPage += direction;
+      renderPaginatedReport();
     }
 
     function renderFuelChart(chartData) {
