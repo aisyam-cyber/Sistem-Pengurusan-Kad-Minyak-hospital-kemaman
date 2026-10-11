@@ -555,7 +555,7 @@
 
   <script>
     // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbz2ac21-TCa_o4y9wd9kqLuGfP7DLFChaEz796pibjEAW1Ny_of0JsdLfQKYbmKBGn8/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwl5ohstjlCJxGOyBo-rWn0mHQt604JoWibYahEUbJaIB3q7MFmwidulTny_NU0iYYeRw/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -960,7 +960,6 @@
       if (fileInput && fileInput.files.length > 0) {
         const file = fileInput.files[0];
         
-        // Peringatan saiz fail keselamatan
         if (file.size > 8 * 1024 * 1024) {
           return showToast("Gambar terlalu besar! Sila guna gambar di bawah 8MB.", "warning");
         }
