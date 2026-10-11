@@ -273,7 +273,7 @@
           </div>
         </div>
 
-        <!-- HANTAR KAD DENGAN FUNGSI MUAT NAIK RESIT -->
+        <!-- HANTAR KAD DENGAN FUNGSI MUAT NAIK BERBILANG RESIT SERENTAK -->
         <div id="view-hantar" class="view-panel hidden max-w-xl mx-auto space-y-6">
           <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
             <h3 class="font-extrabold text-base mb-4 text-slate-800 flex items-center gap-2 border-b pb-3">
@@ -555,7 +555,7 @@
 
   <script>
     // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwl5ohstjlCJxGOyBo-rWn0mHQt604JoWibYahEUbJaIB3q7MFmwidulTny_NU0iYYeRw/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbyoey0SSHM-KMQGWuT3zYFHN5HG8KEABZVfv8V0OThg4Q8F1WWfJULFTu3--70N80yk/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -925,10 +925,10 @@
 
               <div class="p-4 bg-blue-50/80 border border-blue-200 rounded-2xl space-y-1.5">
                 <label class="block text-xs font-extrabold text-blue-900 uppercase flex items-center gap-1.5">
-                  <i class="fa-solid fa-file-arrow-up text-blue-600"></i> Muat Naik Gambar Resit (Format Auto Save ke Drive)
+                  <i class="fa-solid fa-file-arrow-up text-blue-600"></i> Muat Naik Gambar Resit (Boleh Pilih Banyak Gambar Serentak)
                 </label>
-                <input type="file" id="hantarResitFile" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-blue-300 rounded-xl text-xs outline-none">
-                <span class="text-[10px] text-blue-600 font-semibold block">* Gambar resit akan disimpan automatik ke folder Google Drive anda.</span>
+                <input type="file" id="hantarResitFiles" multiple accept="image/*,application/pdf" class="w-full p-2 bg-white border border-blue-300 rounded-xl text-xs outline-none">
+                <span class="text-[10px] text-blue-600 font-semibold block">* Tekan & tahan 'Ctrl' atau 'Shift' untuk memilih lebih dari 1 resit.</span>
               </div>
 
               <div>
@@ -936,7 +936,7 @@
                 <input type="text" id="hantarCatatanBatch" placeholder="Tugas selesai / Selesai perjalanan" class="w-full p-3 bg-slate-50 border rounded-xl text-xs">
               </div>
 
-              <button type="submit" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition">PULANGKAN KAD & SIMPAN RESIT</button>
+              <button type="submit" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition">PULANGKAN KAD & SIMPAN ALL RESIT</button>
             </form>
           `;
         } else {
@@ -953,19 +953,18 @@
       const checkedBoxes = document.querySelectorAll('input[name="hantarKadCheckbox"]:checked');
       const selectedKadIds = Array.from(checkedBoxes).map(cb => cb.value);
 
-      const fileInput = document.getElementById("hantarResitFile");
-      let resitBase64 = "";
-      let resitFileName = "";
+      const fileInput = document.getElementById("hantarResitFiles");
+      let resitList = [];
 
       if (fileInput && fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        
-        if (file.size > 8 * 1024 * 1024) {
-          return showToast("Gambar terlalu besar! Sila guna gambar di bawah 8MB.", "warning");
+        for (let i = 0; i < fileInput.files.length; i++) {
+          const file = fileInput.files[i];
+          if (file.size > 8 * 1024 * 1024) {
+            return showToast(`Gambar "${file.name}" terlalu besar! Sila guna gambar di bawah 8MB.`, "warning");
+          }
+          const base64Str = await convertFileToBase64(file);
+          resitList.push({ base64: base64Str, fileName: file.name });
         }
-
-        resitFileName = file.name;
-        resitBase64 = await convertFileToBase64(file);
       }
 
       const payload = {
@@ -974,11 +973,10 @@
         idPenyelia: document.getElementById('hantarPenyeliaBatch').value,
         odometer: document.getElementById('hantarOdoBatch').value,
         catatan: document.getElementById('hantarCatatanBatch').value,
-        resitBase64: resitBase64,
-        resitFileName: resitFileName
+        resitList: resitList
       };
 
-      toggleLoading(true, "Memproses pemulangan & muat naik resit...");
+      toggleLoading(true, `Memproses pemulangan & muat naik ${resitList.length} resit...`);
 
       try {
         const res = await callBackendApi("hantarKadBatch", payload);
