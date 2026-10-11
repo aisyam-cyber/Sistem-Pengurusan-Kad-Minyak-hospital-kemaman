@@ -11,16 +11,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); }
-    #loadingOverlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.75);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(6px);
-    }
+    #loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
     @media print {
       body * { visibility: hidden; }
       #printableReportArea, #printableReportArea * { visibility: visible; }
@@ -40,7 +31,6 @@
     <p id="loadingText" class="text-white font-medium text-sm tracking-wide">Memproses data...</p>
   </div>
 
-  <!-- TOAST NOTIFICATION -->
   <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full"></div>
 
   <!-- MODAL AMARAN ODOMETER -->
@@ -122,10 +112,7 @@
       </div>
     </header>
 
-    <!-- FLUSH LAYOUT CONTAINER -->
     <div class="flex-1 flex w-full relative">
-      
-      <!-- SIDEBAR -->
       <aside id="sidebarNav" class="bg-slate-900 text-slate-300 w-64 min-w-[16rem] p-4 flex flex-col gap-2 shadow-2xl fixed md:static inset-y-0 left-0 z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out border-r border-slate-800 no-print">
         <div class="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 flex justify-between items-center md:hidden">
           <span>Menu Utama</span>
@@ -154,7 +141,6 @@
         </nav>
       </aside>
 
-      <!-- MAIN CONTENT AREA -->
       <main class="flex-1 p-6 space-y-6 overflow-x-hidden bg-slate-100 min-w-0">
         
         <!-- DASHBOARD -->
@@ -287,7 +273,7 @@
           </div>
         </div>
 
-        <!-- HANTAR KAD -->
+        <!-- HANTAR KAD DENGAN FUNGSI MUAT NAIK RESIT -->
         <div id="view-hantar" class="view-panel hidden max-w-xl mx-auto space-y-6">
           <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
             <h3 class="font-extrabold text-base mb-4 text-slate-800 flex items-center gap-2 border-b pb-3">
@@ -547,7 +533,6 @@
                 </tbody>
               </table>
 
-              <!-- PAGINATION CONTROLS BAGI SENARAI TRANSAKSI MINYAK BULAN INI -->
               <div id="reportPaginationControls" class="flex items-center justify-between pt-3 text-xs font-semibold no-print border-t border-slate-200">
                 <span id="reportPageIndicator" class="text-slate-500">Halaman 1 dari 1</span>
                 <div class="flex items-center gap-2">
@@ -570,7 +555,7 @@
 
   <script>
     // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwFQpXJHw-Jl5Kli3FCj73RjwhLSMFljFhoRer-ZLe_DIQajf6Z7Fq4UcDI9hmiWr_A7w/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwm7u-hOqi5l4luVTXBUVo1HAF6yyLGEJumBED2xcNU02KFvlEDj_A2GdOLelAQrPy8GQ/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -632,6 +617,15 @@
         return `${parts[0]} ${parts[1].substring(0, 5)}`;
       }
       return timeVal ? `${dateVal.split("T")[0]} ${timeVal.substring(0, 5)}` : dateVal.split("T")[0];
+    }
+
+    function convertFileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
     }
 
     async function handleLogin(e) {
@@ -909,6 +903,7 @@
                 <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Pilih Kad Dipulangkan *</label>
                 <div class="space-y-2">${checkboxCardsHtml}</div>
               </div>
+
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Penyelia Penerima *</label>
@@ -919,7 +914,22 @@
                   <input type="number" id="hantarOdoBatch" required placeholder="Contoh: 125500" class="w-full p-3 bg-slate-50 border rounded-xl text-xs font-medium">
                 </div>
               </div>
-              <button type="submit" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md">PULANGKAN KAD</button>
+
+              <!-- FIELD INPUT UPLOAD RESIT DENGAN SIMPANAN AUTOMATIK DRIVE -->
+              <div class="p-4 bg-blue-50/80 border border-blue-200 rounded-2xl space-y-1.5">
+                <label class="block text-xs font-extrabold text-blue-900 uppercase flex items-center gap-1.5">
+                  <i class="fa-solid fa-file-arrow-up text-blue-600"></i> Muat Naik Gambar Resit (Format Auto Save ke Drive)
+                </label>
+                <input type="file" id="hantarResitFile" accept="image/*,application/pdf" class="w-full p-2 bg-white border border-blue-300 rounded-xl text-xs outline-none">
+                <span class="text-[10px] text-blue-600 font-semibold block">* Gambar resit akan disimpan automatik ke folder Google Drive anda.</span>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Catatan Pemulangan</label>
+                <input type="text" id="hantarCatatanBatch" placeholder="Tugas selesai / Selesai perjalanan" class="w-full p-3 bg-slate-50 border rounded-xl text-xs">
+              </div>
+
+              <button type="submit" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition">PULANGKAN KAD & SIMPAN RESIT</button>
             </form>
           `;
         } else {
@@ -936,14 +946,27 @@
       const checkedBoxes = document.querySelectorAll('input[name="hantarKadCheckbox"]:checked');
       const selectedKadIds = Array.from(checkedBoxes).map(cb => cb.value);
 
+      const fileInput = document.getElementById("hantarResitFile");
+      let resitBase64 = "";
+      let resitFileName = "";
+
+      if (fileInput && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        resitFileName = file.name;
+        resitBase64 = await convertFileToBase64(file);
+      }
+
       const payload = {
         idPemandu: currentUser.idPemandu,
         selectedKadIds: selectedKadIds,
         idPenyelia: document.getElementById('hantarPenyeliaBatch').value,
-        odometer: document.getElementById('hantarOdoBatch').value
+        odometer: document.getElementById('hantarOdoBatch').value,
+        catatan: document.getElementById('hantarCatatanBatch').value,
+        resitBase64: resitBase64,
+        resitFileName: resitFileName
       };
 
-      toggleLoading(true, "Memproses pemulangan...");
+      toggleLoading(true, "Memproses pemulangan & muat naik resit...");
 
       try {
         const res = await callBackendApi("hantarKadBatch", payload);
@@ -1076,7 +1099,6 @@
 
     function printPDFReport() { window.print(); }
 
-    /* FUNGSI UTAMA PAGINATION SENARAI TRANSAKSI MINYAK BULAN INI (10 DATA PER PAGE) */
     function renderPaginatedReport() {
       const tbody = document.getElementById("laporanTableBody");
       const pageIndicator = document.getElementById("reportPageIndicator");
