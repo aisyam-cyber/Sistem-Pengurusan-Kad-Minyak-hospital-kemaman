@@ -555,7 +555,7 @@
 
   <script>
     // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwm7u-hOqi5l4luVTXBUVo1HAF6yyLGEJumBED2xcNU02KFvlEDj_A2GdOLelAQrPy8GQ/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbznsxJhdMu-vHXG9s5Z1uVJnJ8BcKc1GTd5CSHvX90IfRcOgl9qYvxwipW8rj-TBoU3bQ/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -688,6 +688,7 @@
       }
     }
 
+    /* FUNGSI POPULATE DROPDOWN - TELAH DIBETULKAN ISU UNDEFINED */
     function populateDropdowns() {
       const ambilVehSelect = document.getElementById("ambilKenderaan");
       const rekodVehSelect = document.getElementById("rekodKenderaan");
@@ -705,7 +706,11 @@
       });
 
       masterData.penyelia.forEach(p => {
-        ambilPenyeliaSelect.innerHTML += `<option value="${p.ID_PEMANDU}">${p.NAMA_PEMANDU} (${p.JAWATAN})</option>`;
+        const namaReal = p.NAMA_PENGGUNA || p.NAMA_PEMANDU || p.NAMA || "Penyelia";
+        const idReal = p.ID_PENGGUNA || p.ID_PEMANDU || p.ID;
+        const jawatanReal = p.JAWATAN || p.CATATAN || "PENYELIA";
+
+        ambilPenyeliaSelect.innerHTML += `<option value="${idReal}">${namaReal} (${jawatanReal})</option>`;
       });
     }
 
@@ -881,7 +886,11 @@
         if (res.success && res.data.length > 0) {
           let penyeliaOptions = '<option value="">-- Pilih Penyelia/PPP Penerima --</option>';
           masterData.penyelia.forEach(p => {
-            penyeliaOptions += `<option value="${p.ID_PEMANDU}">${p.NAMA_PEMANDU} (${p.JAWATAN})</option>`;
+            const namaReal = p.NAMA_PENGGUNA || p.NAMA_PEMANDU || p.NAMA || "Penyelia";
+            const idReal = p.ID_PENGGUNA || p.ID_PEMANDU || p.ID;
+            const jawatanReal = p.JAWATAN || p.CATATAN || "PENYELIA";
+
+            penyeliaOptions += `<option value="${idReal}">${namaReal} (${jawatanReal})</option>`;
           });
 
           let checkboxCardsHtml = "";
@@ -915,7 +924,6 @@
                 </div>
               </div>
 
-              <!-- FIELD INPUT UPLOAD RESIT DENGAN SIMPANAN AUTOMATIK DRIVE -->
               <div class="p-4 bg-blue-50/80 border border-blue-200 rounded-2xl space-y-1.5">
                 <label class="block text-xs font-extrabold text-blue-900 uppercase flex items-center gap-1.5">
                   <i class="fa-solid fa-file-arrow-up text-blue-600"></i> Muat Naik Gambar Resit (Format Auto Save ke Drive)
