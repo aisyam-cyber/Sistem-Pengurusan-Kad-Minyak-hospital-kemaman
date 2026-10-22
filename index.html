@@ -8,10 +8,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); }
-    #loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+    .telco-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.8); }
+    .telco-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%); }
+    .telco-banner { background: linear-gradient(135deg, #2563eb 0%, #4f46e5 50%, #7c3aed 100%); }
+    #loadingOverlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
     @media print {
       body * { visibility: hidden; }
       #printableReportArea, #printableReportArea *, #printableExecSummary, #printableExecSummary * { visibility: visible; }
@@ -28,7 +30,7 @@
       <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
       <i class="fa-solid fa-gas-pump text-white text-xl absolute"></i>
     </div>
-    <p id="loadingText" class="text-white font-medium text-sm tracking-wide">Memproses data...</p>
+    <p id="loadingText" class="text-white font-semibold text-sm tracking-wide">Memproses data...</p>
   </div>
 
   <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full"></div>
@@ -49,35 +51,35 @@
   </div>
 
   <!-- PAGE: LOGIN -->
-  <section id="loginSection" class="flex-1 flex items-center justify-center p-4 bg-slate-900">
-    <div class="max-w-md w-full glass-card p-8 rounded-3xl shadow-2xl border border-white/20 relative overflow-hidden">
+  <section id="loginSection" class="flex-1 flex items-center justify-center p-4 telco-gradient">
+    <div class="max-w-md w-full telco-card p-8 rounded-3xl shadow-2xl relative overflow-hidden">
       <div class="text-center mb-8">
         <div class="inline-flex p-4 rounded-2xl bg-blue-600/10 text-blue-600 mb-3 border border-blue-500/20 shadow-inner">
           <i class="fa-solid fa-gas-pump text-3xl"></i>
         </div>
-        <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">SYSTEM KAD MINYAK</h1>
-        <p class="text-xs font-bold tracking-widest text-blue-600 uppercase mt-1">Hospital Kemaman</p>
+        <h1 class="text-2xl font-black text-slate-900 tracking-tight">SISTEM KAD MINYAK</h1>
+        <p class="text-xs font-black tracking-widest text-indigo-600 uppercase mt-1">HOSPITAL KEMAMAN</p>
       </div>
 
       <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">ID Pemandu / Penyelia</label>
+          <label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wider mb-2">ID Pemandu / Penyelia</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400"><i class="fa-solid fa-id-card"></i></span>
-            <input type="text" id="loginId" required placeholder="Contoh: DRV5469" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+            <input type="text" id="loginId" required placeholder="Contoh: SUP5041" class="w-full pl-10 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500 font-bold text-slate-800">
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">PIN 4-Digit</label>
+          <label class="block text-xs font-extrabold text-slate-600 uppercase tracking-wider mb-2">PIN 4-Digit</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400"><i class="fa-solid fa-lock"></i></span>
-            <input type="password" id="loginPin" maxlength="6" required placeholder="••••" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+            <input type="password" id="loginPin" maxlength="6" required placeholder="••••" class="w-full pl-10 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm outline-none focus:ring-2 focus:ring-blue-500 font-bold text-slate-800">
           </div>
         </div>
 
-        <button type="submit" id="loginSubmitBtn" class="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl text-sm shadow-lg transition flex items-center justify-center gap-2">
-          <span>LOG MASUK</span>
+        <button type="submit" id="loginSubmitBtn" class="w-full py-4 telco-banner text-white font-extrabold rounded-2xl text-sm shadow-xl shadow-indigo-500/30 transition flex items-center justify-center gap-2 hover:opacity-95">
+          <span>LOG MASUK AKUN</span>
           <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
         </button>
       </form>
@@ -86,59 +88,61 @@
 
   <!-- MAIN APP SECTION -->
   <div id="appSection" class="hidden flex-1 flex flex-col bg-slate-100 min-h-screen">
-    <header class="bg-slate-900 border-b border-slate-800 text-white px-6 py-3.5 shadow-md flex items-center justify-between sticky top-0 z-40 no-print">
+    <header class="bg-slate-900 border-b border-slate-800 text-white px-6 py-4 shadow-lg flex items-center justify-between sticky top-0 z-40 no-print">
       <div class="flex items-center gap-3">
         <button onclick="toggleMobileMenu()" class="md:hidden text-2xl text-slate-300 focus:outline-none">
           <i class="fa-solid fa-bars"></i>
         </button>
-        <div class="flex items-center gap-2">
-          <i class="fa-solid fa-gas-pump text-blue-400 text-2xl"></i>
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-blue-600/20 rounded-xl border border-blue-500/30">
+            <i class="fa-solid fa-gas-pump text-blue-400 text-xl"></i>
+          </div>
           <div>
-            <h2 class="font-extrabold text-sm tracking-tight leading-tight">SYSTEM KAD MINYAK</h2>
-            <p class="text-[10px] text-slate-400">HOSPITAL KEMAMAN</p>
+            <h2 class="font-black text-sm tracking-tight leading-tight">SISTEM KAD MINYAK</h2>
+            <p class="text-[10px] font-bold text-indigo-400 tracking-wider">HOSPITAL KEMAMAN</p>
           </div>
         </div>
       </div>
 
       <div class="flex items-center gap-4">
         <div class="text-right hidden sm:block">
-          <p id="navUserName" class="font-bold text-xs text-slate-100">Nama Pengguna</p>
-          <p id="navUserId" class="text-[10px] text-blue-400 font-mono">ID: -</p>
+          <p id="navUserName" class="font-extrabold text-xs text-white">Nama Pengguna</p>
+          <p id="navUserId" class="text-[10px] text-blue-400 font-mono font-bold">ID: -</p>
         </div>
-        <button onclick="handleLogout()" class="px-3.5 py-1.5 bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-red-500/30">
+        <button onclick="handleLogout()" class="px-3.5 py-1.5 bg-red-500/20 hover:bg-red-500 text-red-300 hover:text-white rounded-xl text-xs font-extrabold transition flex items-center gap-1.5 border border-red-500/30">
           <i class="fa-solid fa-right-from-bracket"></i>
-          <span>Log Keluar</span>
+          <span>Keluar</span>
         </button>
       </div>
     </header>
 
     <div class="flex-1 flex w-full relative">
       <aside id="sidebarNav" class="bg-slate-900 text-slate-300 w-64 min-w-[16rem] p-4 flex flex-col gap-2 shadow-2xl fixed md:static inset-y-0 left-0 z-30 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out border-r border-slate-800 no-print">
-        <div class="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 flex justify-between items-center md:hidden">
-          <span>Menu Utama</span>
+        <div class="px-3 py-2 text-[10px] font-black uppercase tracking-wider text-slate-400 flex justify-between items-center md:hidden">
+          <span>Menu Navigasi</span>
           <button onclick="toggleMobileMenu()" class="text-slate-400"><i class="fa-solid fa-xmark text-base"></i></button>
         </div>
 
         <nav class="flex-1 space-y-1.5">
-          <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
-            <i class="fa-solid fa-chart-line w-4"></i> Dashboard
+          <button onclick="switchView('dashboard')" id="nav-dashboard" class="nav-btn w-full px-4 py-3.5 rounded-2xl text-xs font-bold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+            <i class="fa-solid fa-chart-pie w-4"></i> Dashboard Utama
           </button>
-          <button onclick="switchView('ambil')" id="nav-ambil" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+          <button onclick="switchView('ambil')" id="nav-ambil" class="nav-btn w-full px-4 py-3.5 rounded-2xl text-xs font-bold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
             <i class="fa-solid fa-id-card w-4"></i> Ambil Kad
           </button>
-          <button onclick="switchView('hantar')" id="nav-hantar" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+          <button onclick="switchView('hantar')" id="nav-hantar" class="nav-btn w-full px-4 py-3.5 rounded-2xl text-xs font-bold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
             <i class="fa-solid fa-rotate-left w-4"></i> Hantar Kad
           </button>
-          <button onclick="switchView('rekod')" id="nav-rekod" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+          <button onclick="switchView('rekod')" id="nav-rekod" class="nav-btn w-full px-4 py-3.5 rounded-2xl text-xs font-bold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
             <i class="fa-solid fa-gas-pump w-4"></i> Rekod Minyak
           </button>
-          <button onclick="switchView('sejarah')" id="nav-sejarah" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
-            <i class="fa-solid fa-clock-rotate-left w-4"></i> Sejarah Rekod
+          <button onclick="switchView('sejarah')" id="nav-sejarah" class="nav-btn w-full px-4 py-3.5 rounded-2xl text-xs font-bold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+            <i class="fa-solid fa-clock-rotate-left w-4"></i> Sejarah Transaksi
           </button>
-          <button onclick="switchView('laporan')" id="nav-laporan" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
-            <i class="fa-solid fa-file-invoice-dollar w-4"></i> Laporan & Graf
+          <button onclick="switchView('laporan')" id="nav-laporan" class="nav-btn w-full px-4 py-3.5 rounded-2xl text-xs font-bold text-left flex items-center gap-3 transition hover:bg-slate-800 text-slate-400">
+            <i class="fa-solid fa-chart-area w-4"></i> Laporan & Graf
           </button>
-          <button onclick="switchView('execSummary')" id="nav-execSummary" class="nav-btn w-full px-4 py-3 rounded-xl text-xs font-semibold text-left flex items-center gap-3 transition bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-600/30">
+          <button onclick="switchView('execSummary')" id="nav-execSummary" class="nav-btn w-full px-4 py-3.5 rounded-2xl text-xs font-bold text-left flex items-center gap-3 transition bg-indigo-600 text-white font-extrabold shadow-lg shadow-indigo-600/30">
             <i class="fa-solid fa-file-signature w-4"></i> Ringkasan Eksekutif
           </button>
         </nav>
@@ -146,87 +150,110 @@
 
       <main class="flex-1 p-6 space-y-6 overflow-x-hidden bg-slate-100 min-w-0">
         
-        <!-- DASHBOARD -->
+        <!-- DASHBOARD TELCO STYLE -->
         <div id="view-dashboard" class="view-panel space-y-6 hidden">
-          <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white p-6 rounded-3xl shadow-xl border border-blue-500/20">
-            <h2 id="dashWelcomeTitle" class="text-xl font-extrabold tracking-tight">Selamat Datang, -</h2>
-            <p id="dashUserSub" class="text-xs text-blue-100 font-medium mt-1">ID Pengguna: -</p>
+          
+          <!-- BANNER HERO TELCO -->
+          <div class="telco-banner text-white p-6 md:p-8 rounded-3xl shadow-xl border border-white/20 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="relative z-10">
+              <span class="px-3 py-1 bg-white/20 text-white text-[10px] font-black tracking-widest uppercase rounded-full border border-white/30 backdrop-blur-md">PORTAL MINYAK DIGITAL</span>
+              <h2 id="dashWelcomeTitle" class="text-2xl md:text-3xl font-black tracking-tight mt-2">Selamat Datang, -</h2>
+              <p id="dashUserSub" class="text-xs text-blue-100 font-bold mt-1">ID Pengguna: -</p>
+            </div>
+            <div class="relative z-10 flex items-center gap-3">
+              <div class="px-4 py-2 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20 text-right">
+                <span class="block text-[10px] font-bold text-blue-200">STATUS AKUN</span>
+                <span class="text-xs font-black text-emerald-300 flex items-center gap-1"><i class="fa-solid fa-circle text-[8px]"></i> AKTIF & SAH</span>
+              </div>
+            </div>
           </div>
 
           <div id="serviceAlertContainer" class="hidden bg-amber-50 border-2 border-amber-300 rounded-3xl p-5 shadow-sm space-y-3">
-            <div class="flex items-center gap-3 text-amber-800 font-bold text-sm">
+            <div class="flex items-center gap-3 text-amber-800 font-extrabold text-sm">
               <i class="fa-solid fa-triangle-exclamation text-2xl text-amber-600 animate-bounce"></i>
               <h3>KENDERAAN PERLU SERVIS (ODOMETER KURANG 500KM DARI SASARAN)</h3>
             </div>
             <div id="serviceAlertList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
           </div>
 
+          <!-- TELCO DASHBOARD KPI TILES -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Kad Simpanan</span>
-                <span class="p-2 bg-emerald-50 text-emerald-600 rounded-xl"><i class="fa-solid fa-box-archive text-sm"></i></span>
+            <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm relative overflow-hidden">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">KAD SIMPANAN</span>
+                <span class="p-2.5 bg-emerald-50 text-emerald-600 rounded-2xl"><i class="fa-solid fa-box-archive text-base"></i></span>
               </div>
-              <h3 id="statSimpanan" class="text-2xl font-black text-slate-800">0</h3>
+              <h3 id="statSimpanan" class="text-3xl font-black text-slate-900 tracking-tight">0</h3>
+              <p class="text-[10px] font-bold text-emerald-600 mt-1"><i class="fa-solid fa-circle-check"></i> Sedia Digunakan</p>
             </div>
 
-            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Kad Digunakan</span>
-                <span class="p-2 bg-amber-50 text-amber-600 rounded-xl"><i class="fa-solid fa-hand-holding-hand text-sm"></i></span>
+            <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm relative overflow-hidden">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">KAD DIGUNAKAN</span>
+                <span class="p-2.5 bg-amber-50 text-amber-600 rounded-2xl"><i class="fa-solid fa-hand-holding-hand text-base"></i></span>
               </div>
-              <h3 id="statDigunakan" class="text-2xl font-black text-slate-800">0</h3>
+              <h3 id="statDigunakan" class="text-3xl font-black text-slate-900 tracking-tight">0</h3>
+              <p class="text-[10px] font-bold text-amber-600 mt-1"><i class="fa-solid fa-clock"></i> Dalam Pinjaman</p>
             </div>
 
-            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Kenderaan Hospital</span>
-                <span class="p-2 bg-blue-50 text-blue-600 rounded-xl"><i class="fa-solid fa-truck-medical text-sm"></i></span>
+            <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm relative overflow-hidden">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">KENDERAAN</span>
+                <span class="p-2.5 bg-blue-50 text-blue-600 rounded-2xl"><i class="fa-solid fa-truck-medical text-base"></i></span>
               </div>
-              <h3 id="statKenderaan" class="text-2xl font-black text-slate-800">0</h3>
-              <div class="pt-2 border-t border-slate-100 mt-2 flex items-center justify-between text-[11px] font-semibold">
-                <span class="text-red-600 flex items-center gap-1"><i class="fa-solid fa-ambulance"></i> Ambulans: <b id="statAmbulans" class="text-slate-800">0</b></span>
-                <span class="text-blue-600 flex items-center gap-1"><i class="fa-solid fa-car"></i> Jabatan: <b id="statJabatan" class="text-slate-800">0</b></span>
+              <h3 id="statKenderaan" class="text-3xl font-black text-slate-900 tracking-tight">0</h3>
+              <div class="pt-2 border-t border-slate-100 mt-2 flex items-center justify-between text-[11px] font-bold">
+                <span class="text-red-600 flex items-center gap-1"><i class="fa-solid fa-ambulance"></i> Amb: <b id="statAmbulans" class="text-slate-900">0</b></span>
+                <span class="text-blue-600 flex items-center gap-1"><i class="fa-solid fa-car"></i> Jab: <b id="statJabatan" class="text-slate-900">0</b></span>
               </div>
             </div>
 
-            <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Isian Saya</span>
-                <span class="p-2 bg-purple-50 text-purple-600 rounded-xl"><i class="fa-solid fa-receipt text-sm"></i></span>
+            <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm relative overflow-hidden">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">ISIAN SAYA</span>
+                <span class="p-2.5 bg-purple-50 text-purple-600 rounded-2xl"><i class="fa-solid fa-receipt text-base"></i></span>
               </div>
-              <h3 id="statTransaksi" class="text-2xl font-black text-slate-800">0</h3>
+              <h3 id="statTransaksi" class="text-3xl font-black text-slate-900 tracking-tight">0</h3>
+              <p class="text-[10px] font-bold text-purple-600 mt-1"><i class="fa-solid fa-chart-line"></i> Rekod Bulan Ini</p>
             </div>
           </div>
 
+          <!-- SENARAI KAD BELUM DIPULANGKAN TELCO TABLE -->
           <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div class="flex items-center gap-2 text-slate-800 font-bold text-sm">
-                <i class="fa-solid fa-clock-rotate-left text-amber-500"></i>
-                <h3>Senarai Kad Minyak Belum Dipulangkan</h3>
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div class="flex items-center gap-3">
+                <div class="p-2 bg-amber-50 text-amber-600 rounded-xl border border-amber-200">
+                  <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+                </div>
+                <div>
+                  <h3 class="font-black text-sm text-slate-800">Senarai Kad Minyak Belum Dipulangkan</h3>
+                  <p class="text-[11px] text-slate-400 font-semibold">Rekod pinjaman kad aktif di bawah jagaan pemandu</p>
+                </div>
               </div>
-              <button onclick="loadInitialAppData()" class="text-xs text-blue-600 font-bold hover:underline flex items-center gap-1">
-                <i class="fa-solid fa-arrows-rotate"></i> Muat Semula
+              <button onclick="loadInitialAppData()" class="px-3.5 py-2 bg-blue-50 text-blue-600 rounded-xl text-xs font-extrabold hover:bg-blue-100 transition flex items-center gap-1.5 border border-blue-200">
+                <i class="fa-solid fa-arrows-rotate"></i>
+                <span>Muat Semula</span>
               </button>
             </div>
 
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr class="bg-slate-900 text-white uppercase font-semibold">
-                    <th class="p-3 rounded-l-xl">Kenderaan (Plat)</th>
-                    <th class="p-3">Pemandu Bertanggungjawab</th>
-                    <th class="p-3">Jenis Kad / Provider</th>
-                    <th class="p-3">Tarikh / Masa Ambil</th>
-                    <th class="p-3 rounded-r-xl">Diserahkan Oleh</th>
+                  <tr class="bg-slate-900 text-white uppercase font-bold tracking-wider">
+                    <th class="p-3.5 rounded-l-2xl">Kenderaan (Plat)</th>
+                    <th class="p-3.5">Pemandu Bertanggungjawab</th>
+                    <th class="p-3.5">Jenis Kad / Provider</th>
+                    <th class="p-3.5">Tarikh / Masa Ambil</th>
+                    <th class="p-3.5 rounded-r-2xl">Diserahkan Oleh</th>
                   </tr>
                 </thead>
-                <tbody id="outstandingTableBody" class="divide-y divide-slate-100">
-                  <tr><td colspan="5" class="p-4 text-center text-slate-400">Memuatkan senarai kad...</td></tr>
+                <tbody id="outstandingTableBody" class="divide-y divide-slate-100 font-medium">
+                  <tr><td colspan="5" class="p-6 text-center text-slate-400">Memuatkan senarai kad...</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
+
         </div>
 
         <!-- AMBIL KAD -->
@@ -651,7 +678,7 @@
 
   <script>
     // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbz0ag9Kp5Ft38e-fGPPif5D6pc7nTEESJAL9q8sVo14VyamBv2hsNiscOPB4BCw3xfiMw/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwrmSClLLj2s9odd4OXET0L6vZ7ySYWO3IgV-CJpeUnZFZZyw1PuFZDUEnVJtcHB-dlmQ/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -691,7 +718,7 @@
       const container = document.getElementById("toastContainer");
       const toast = document.createElement("div");
       const bgColor = type === "success" ? "bg-emerald-600" : type === "warning" ? "bg-amber-500" : "bg-red-600";
-      toast.className = `${bgColor} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 text-xs font-bold transition transform duration-300`;
+      toast.className = `${bgColor} text-white px-4 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 text-xs font-bold transition transform duration-300 border border-white/20`;
       toast.innerHTML = `<span>${message}</span>`;
       container.appendChild(toast);
       setTimeout(() => toast.remove(), 3500);
@@ -723,7 +750,6 @@
       });
     }
 
-    // LOG MASUK TEROPTIMUM: AUTO-SWITCH KE DASHBOARD SELEPAS LOG MASUK BERJAYA
     async function handleLogin(e) {
       e.preventDefault();
       const id = document.getElementById("loginId").value.trim();
@@ -757,7 +783,6 @@
             loadInitialAppData();
           }
 
-          // AUTOMATIK BUKA PAPARAN DASHBOARD
           switchView('dashboard');
 
         } else {
@@ -846,17 +871,17 @@
         matchedCards.forEach(kad => {
           const isUsed = String(kad.STATUS_KAD).toUpperCase() === "SEDANG DIGUNAKAN";
           checkboxGroup.innerHTML += `
-            <label class="flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 cursor-pointer ${isUsed ? 'opacity-60 cursor-not-allowed' : ''}">
+            <label class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-100 cursor-pointer ${isUsed ? 'opacity-60 cursor-not-allowed' : ''}">
               <input type="checkbox" name="ambilKadCheckbox" value="${kad.ID_KAD}" ${isUsed ? 'disabled' : ''} class="w-4 h-4 text-blue-600 rounded">
               <div class="flex-1 flex items-center justify-between">
-                <span class="font-bold text-slate-800 text-xs">No. Kad: ${kad.NO_KAD_4_DIGIT} (${kad.PROVIDER})</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isUsed ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}">${kad.STATUS_KAD}</span>
+                <span class="font-extrabold text-slate-800 text-xs">No. Kad: ${kad.NO_KAD_4_DIGIT} (${kad.PROVIDER})</span>
+                <span class="text-[10px] font-black px-2.5 py-1 rounded-full ${isUsed ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}">${kad.STATUS_KAD}</span>
               </div>
             </label>
           `;
         });
       } else {
-        checkboxGroup.innerHTML = '<p class="text-xs text-red-500 italic">-- Tiada Kad Didaftarkan --</p>';
+        checkboxGroup.innerHTML = '<p class="text-xs text-red-500 italic font-bold">-- Tiada Kad Didaftarkan Bagi Kenderaan Ini --</p>';
       }
     }
 
@@ -1007,11 +1032,11 @@
           let checkboxCardsHtml = "";
           res.data.forEach(item => {
             checkboxCardsHtml += `
-              <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100">
+              <label class="flex items-center gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-100">
                 <input type="checkbox" name="hantarKadCheckbox" value="${item.idKad}" class="w-4 h-4 text-amber-600 rounded" checked>
                 <div class="flex-1">
-                  <h4 class="font-bold text-slate-800 text-sm">KAD: ${item.noKad4Digit} (${item.provider})</h4>
-                  <p class="text-xs text-slate-500 font-medium">Kenderaan: ${item.noPendaftaran} - ${item.namaKenderaan}</p>
+                  <h4 class="font-extrabold text-slate-800 text-sm">KAD: ${item.noKad4Digit} (${item.provider})</h4>
+                  <p class="text-xs text-slate-500 font-bold">Kenderaan: ${item.noPendaftaran} - ${item.namaKenderaan}</p>
                 </div>
               </label>
             `;
@@ -1052,10 +1077,10 @@
             </form>
           `;
         } else {
-          container.innerHTML = '<div class="p-8 text-center text-slate-400"><p>Tiada kad sedang digunakan oleh anda.</p></div>';
+          container.innerHTML = '<div class="p-8 text-center text-slate-400 font-bold"><p>Tiada kad sedang digunakan oleh anda.</p></div>';
         }
       } catch (err) {
-        container.innerHTML = `<div class="p-4 text-center text-red-500">${err.message}</div>`;
+        container.innerHTML = `<div class="p-4 text-center text-red-500 font-bold">${err.message}</div>`;
       }
     }
 
@@ -1126,7 +1151,7 @@
     function renderPaginatedSejarah() {
       const tbody = document.getElementById("sejarahTableBody");
       if (fullSejarahData.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400">Tiada sejarah rekod pengisian bulan ini.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400 font-bold">Tiada sejarah rekod pengisian bulan ini.</td></tr>';
         return;
       }
 
@@ -1136,14 +1161,14 @@
       tbody.innerHTML = "";
       currentItems.forEach(r => {
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-50">
-            <td class="p-3 font-mono text-xs">${formatExactDateTime(r.TARIKH_ISI, r.MASA_ISI)}</td>
-            <td class="p-3 font-semibold">${r.NO_PENDAFTARAN}</td>
-            <td class="p-3">${r.NO_KAD_4_DIGIT} (${r.PROVIDER})</td>
-            <td class="p-3 font-medium text-slate-700">${r.NAMA_STESEN}</td>
-            <td class="p-3 font-mono">${r.ODOMETER}</td>
-            <td class="p-3 font-bold text-blue-600">${r.LITER} L</td>
-            <td class="p-3 font-bold text-emerald-600">RM ${Number(r.JUMLAH_RM).toFixed(2)}</td>
+          <tr class="hover:bg-slate-50 font-medium">
+            <td class="p-3.5 font-mono text-xs">${formatExactDateTime(r.TARIKH_ISI, r.MASA_ISI)}</td>
+            <td class="p-3.5 font-bold text-slate-900">${r.NO_PENDAFTARAN}</td>
+            <td class="p-3.5"><span class="px-2.5 py-1 bg-slate-100 text-slate-700 font-mono font-extrabold rounded-lg">${r.NO_KAD_4_DIGIT} (${r.PROVIDER})</span></td>
+            <td class="p-3.5 font-bold text-slate-700">${r.NAMA_STESEN}</td>
+            <td class="p-3.5 font-mono text-slate-800">${r.ODOMETER} KM</td>
+            <td class="p-3.5 font-black text-blue-600">${r.LITER} L</td>
+            <td class="p-3.5 font-black text-emerald-600">RM ${Number(r.JUMLAH_RM).toFixed(2)}</td>
           </tr>
         `;
       });
@@ -1331,20 +1356,31 @@
       document.getElementById("statTransaksi").innerText = stats.jumlahTransaksi;
     }
 
+    // FORMAT JADUAL KAD BELUM DIPULANGKAN BERGAYA TELCO
     function renderOutstandingCards(list) {
       const tbody = document.getElementById("outstandingTableBody");
       if (list && list.length > 0) {
         tbody.innerHTML = list.map(item => `
-          <tr class="hover:bg-slate-50 font-medium">
-            <td class="p-3 font-bold text-slate-800">${item.noPendaftaran} <span class="text-[10px] text-slate-400 block">${item.namaKenderaan}</span></td>
-            <td class="p-3 text-blue-600 font-bold">${item.namaPemandu} <span class="text-[10px] text-slate-400 font-mono block">ID: ${item.idPemandu}</span></td>
-            <td class="p-3"><span class="px-2 py-1 bg-amber-50 text-amber-700 font-bold rounded-lg border border-amber-200 inline-block">${item.noKad4Digit} (${item.provider})</span></td>
-            <td class="p-3 font-mono text-slate-600">${formatExactDateTime(item.tarikhAmbil)}</td>
-            <td class="p-3 text-slate-700">${item.namaPenyerah}</td>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="p-3.5">
+              <span class="font-extrabold text-slate-900 text-sm block">${item.noPendaftaran}</span>
+              <span class="text-[10px] text-slate-400 font-bold uppercase block">${item.namaKenderaan}</span>
+            </td>
+            <td class="p-3.5">
+              <span class="font-bold text-blue-600 text-xs block">${item.namaPemandu}</span>
+              <span class="text-[10px] text-slate-400 font-mono font-bold block">ID: ${item.idPemandu}</span>
+            </td>
+            <td class="p-3.5">
+              <span class="px-2.5 py-1 bg-amber-50 text-amber-800 font-black rounded-xl border border-amber-200 inline-block font-mono text-xs">
+                ${item.noKad4Digit} (${item.provider})
+              </span>
+            </td>
+            <td class="p-3.5 font-mono text-xs text-slate-600 font-bold">${formatExactDateTime(item.tarikhAmbil)}</td>
+            <td class="p-3.5 text-slate-700 font-bold">${item.namaPenyerah}</td>
           </tr>
         `).join("");
       } else {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-emerald-600 font-bold"><i class="fa-solid fa-circle-check text-xl mr-2"></i> Semua kad minyak berada dalam simpanan.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-emerald-600 font-black text-sm"><i class="fa-solid fa-circle-check text-xl mr-2"></i> Semua kad minyak berada dalam simpanan.</td></tr>`;
       }
     }
 
@@ -1372,7 +1408,7 @@
     function switchView(viewName) {
       document.querySelectorAll(".view-panel").forEach(el => el.classList.add("hidden"));
       document.querySelectorAll(".nav-btn").forEach(el => {
-        el.classList.remove("bg-blue-600", "bg-indigo-600", "text-white", "font-bold", "shadow-lg");
+        el.classList.remove("bg-blue-600", "bg-indigo-600", "text-white", "font-extrabold", "shadow-lg");
         el.classList.add("text-slate-400");
       });
 
@@ -1381,7 +1417,7 @@
 
       if (activeView) activeView.classList.remove("hidden");
       if (activeNav) {
-        activeNav.classList.add(viewName === 'execSummary' ? "bg-indigo-600" : "bg-blue-600", "text-white", "font-bold", "shadow-lg");
+        activeNav.classList.add(viewName === 'execSummary' ? "bg-indigo-600" : "bg-blue-600", "text-white", "font-extrabold", "shadow-lg");
         activeNav.classList.remove("text-slate-400");
       }
 
