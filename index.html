@@ -651,7 +651,7 @@
 
   <script>
     // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwr95lgJIBf1nXGVQ_A0YYfLKi4diF9I0zjcDZWK40nXLxRb-VnOftIaR-qWokzaEVmSg/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbxx8QHl8_3NDQs6QGp7-afuGjlhatphMDCDJA5DZ5c-Swz1PbX3HW5er2H8-a7qKyRv2A/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -723,12 +723,13 @@
       });
     }
 
+    // LOG MASUK TEROPTIMUM: Menangani User & InitialData dalam 1 Panggilan Sahaja
     async function handleLogin(e) {
       e.preventDefault();
       const id = document.getElementById("loginId").value.trim();
       const pin = document.getElementById("loginPin").value.trim();
 
-      toggleLoading(true, "Mengesahkan akaun...");
+      toggleLoading(true, "Mengesahkan akaun & memuatkan data...");
 
       try {
         const res = await callBackendApi("loginDriver", { idPemandu: id, pin: pin });
@@ -746,7 +747,16 @@
           document.getElementById("loginSection").classList.add("hidden");
           document.getElementById("appSection").classList.remove("hidden");
 
-          loadInitialAppData();
+          // Menerima data terus dari panggilan log masuk tunggal
+          if (res.initialData) {
+            masterData = res.initialData;
+            populateDropdowns();
+            renderDashboardStats(res.initialData.stats);
+            renderOutstandingCards(res.initialData.outstandingCards);
+            renderServiceAlerts(res.initialData.serviceAlerts);
+          } else {
+            loadInitialAppData();
+          }
         } else {
           showToast(res.message, "error");
         }
