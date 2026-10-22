@@ -723,7 +723,7 @@
       });
     }
 
-    // LOG MASUK TEROPTIMUM: Menangani User & InitialData dalam 1 Panggilan Sahaja
+    // LOG MASUK TEROPTIMUM: AUTO-SWITCH KE DASHBOARD SELEPAS LOG MASUK BERJAYA
     async function handleLogin(e) {
       e.preventDefault();
       const id = document.getElementById("loginId").value.trim();
@@ -747,7 +747,6 @@
           document.getElementById("loginSection").classList.add("hidden");
           document.getElementById("appSection").classList.remove("hidden");
 
-          // Menerima data terus dari panggilan log masuk tunggal
           if (res.initialData) {
             masterData = res.initialData;
             populateDropdowns();
@@ -757,6 +756,10 @@
           } else {
             loadInitialAppData();
           }
+
+          // AUTOMATIK BUKA PAPARAN DASHBOARD
+          switchView('dashboard');
+
         } else {
           showToast(res.message, "error");
         }
