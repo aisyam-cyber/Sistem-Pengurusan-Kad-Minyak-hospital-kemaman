@@ -677,8 +677,8 @@
   </div>
 
   <script>
-    // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbwrmSClLLj2s9odd4OXET0L6vZ7ySYWO3IgV-CJpeUnZFZZyw1PuFZDUEnVJtcHB-dlmQ/exec";
+    // URL WEB APP GOOGLE APPS SCRIPT BERAKHIR DENGAN /exec
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzKP-umQNZVBYXR4ZKXPw4DFBpNduFzrymdCnOaBPAfp8H7ysRTEVT0NN9T0wIcoJx1_w/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -1356,7 +1356,6 @@
       document.getElementById("statTransaksi").innerText = stats.jumlahTransaksi;
     }
 
-    // FORMAT JADUAL KAD BELUM DIPULANGKAN BERGAYA TELCO
     function renderOutstandingCards(list) {
       const tbody = document.getElementById("outstandingTableBody");
       if (list && list.length > 0) {
