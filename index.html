@@ -17,7 +17,7 @@
     @media print {
       body * { visibility: hidden; }
       #printableReportArea, #printableReportArea *, #printableExecSummary, #printableExecSummary * { visibility: visible; }
-      #printableExecSummary { position: absolute; left: 0; top: 0; width: 100%; }
+      #printableExecSummary { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 20px; }
       .no-print { display: none !important; }
     }
   </style>
@@ -79,7 +79,7 @@
         </div>
 
         <button type="submit" id="loginSubmitBtn" class="w-full py-4 telco-banner text-white font-extrabold rounded-2xl text-sm shadow-xl shadow-indigo-500/30 transition flex items-center justify-center gap-2 hover:opacity-95">
-          <span>LOG MASUK AKAUN</span>
+          <span>LOG MASUK AKUN</span>
           <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
         </button>
       </form>
@@ -153,7 +153,6 @@
         <!-- DASHBOARD TELCO STYLE -->
         <div id="view-dashboard" class="view-panel space-y-6 hidden">
           
-          <!-- BANNER HERO TELCO -->
           <div class="telco-banner text-white p-6 md:p-8 rounded-3xl shadow-xl border border-white/20 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="relative z-10">
               <span class="px-3 py-1 bg-white/20 text-white text-[10px] font-black tracking-widest uppercase rounded-full border border-white/30 backdrop-blur-md">PORTAL MINYAK DIGITAL</span>
@@ -162,7 +161,7 @@
             </div>
             <div class="relative z-10 flex items-center gap-3">
               <div class="px-4 py-2 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20 text-right">
-                <span class="block text-[10px] font-bold text-blue-200">STATUS AKAUN</span>
+                <span class="block text-[10px] font-bold text-blue-200">STATUS AKUN</span>
                 <span class="text-xs font-black text-emerald-300 flex items-center gap-1"><i class="fa-solid fa-circle text-[8px]"></i> AKTIF & SAH</span>
               </div>
             </div>
@@ -176,7 +175,6 @@
             <div id="serviceAlertList" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
           </div>
 
-          <!-- TELCO DASHBOARD KPI TILES -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm relative overflow-hidden">
               <div class="flex items-center justify-between mb-3">
@@ -218,7 +216,6 @@
             </div>
           </div>
 
-          <!-- SENARAI KAD BELUM DIPULANGKAN TELCO TABLE -->
           <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
               <div class="flex items-center gap-3">
@@ -461,13 +458,13 @@
                   <option value="7">Julai</option>
                   <option value="8">Ogos</option>
                   <option value="9">September</option>
-                  <option value="10" selected>Oktober</option>
+                  <option value="10">Oktober</option>
                   <option value="11">November</option>
                   <option value="12">Disember</option>
                 </select>
                 <select id="reportFilterYear" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold outline-none">
                   <option value="2025">2025</option>
-                  <option value="2026" selected>2026</option>
+                  <option value="2026">2026</option>
                   <option value="2027">2027</option>
                 </select>
                 <button onclick="loadReportData()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5">
@@ -579,18 +576,45 @@
           </div>
         </div>
 
-        <!-- RINGKASAN EKSEKUTIF BULANAN -->
+        <!-- RINGKASAN EKSEKUTIF BULANAN DENGAN FILTER (TELCO STYLE) -->
         <div id="view-execSummary" class="view-panel hidden max-w-4xl mx-auto space-y-6">
-          <div class="flex items-center justify-between no-print bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          
+          <!-- BAR FILTER RINGKASAN EKSEKUTIF (DISEMBUNYIKAN SEMASA CETAK) -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div>
-              <h3 class="font-extrabold text-sm text-slate-800">Jana Ringkasan Eksekutif Bulanan</h3>
-              <p class="text-xs text-slate-500">Dokumen format 1 muka surat A4 untuk serahan Pengarah Hospital.</p>
+              <h3 class="font-extrabold text-sm text-slate-800">Ringkasan Eksekutif Bulanan</h3>
+              <p class="text-xs text-slate-500">Pilih bulan & tahun untuk paparan serta cetakan 1 muka surat A4.</p>
             </div>
-            <button onclick="window.print()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1.5">
-              <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
-            </button>
+            <div class="flex flex-wrap items-center gap-2">
+              <select id="execFilterMonth" class="p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold outline-none">
+                <option value="1">Januari</option>
+                <option value="2">Februari</option>
+                <option value="3">Mac</option>
+                <option value="4">April</option>
+                <option value="5">Mei</option>
+                <option value="6">Jun</option>
+                <option value="7">Julai</option>
+                <option value="8">Ogos</option>
+                <option value="9">September</option>
+                <option value="10">Oktober</option>
+                <option value="11">November</option>
+                <option value="12">Disember</option>
+              </select>
+              <select id="execFilterYear" class="p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold outline-none">
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+              </select>
+              <button onclick="loadExecSummaryData()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+                <i class="fa-solid fa-filter"></i> Tapis
+              </button>
+              <button onclick="window.print()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md transition flex items-center gap-1.5">
+                <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
+              </button>
+            </div>
           </div>
 
+          <!-- DOKUMEN CETAK A4 RINGKASAN EKSEKUTIF -->
           <div id="printableExecSummary" class="bg-white p-8 rounded-3xl shadow-lg border border-slate-200 space-y-6 text-slate-800">
             <div class="border-b-2 border-slate-900 pb-4 flex justify-between items-end">
               <div>
@@ -598,7 +622,7 @@
                 <p class="text-xs font-extrabold text-indigo-600 uppercase tracking-widest mt-0.5">HOSPITAL KEMAMAN — APLIKASI DIGITAL REAL-TIME</p>
               </div>
               <div class="text-right">
-                <span id="execMonthYearTag" class="px-3 py-1 bg-slate-100 text-slate-800 font-extrabold text-xs rounded-lg border border-slate-300">BULAN SEMASA</span>
+                <span id="execMonthYearTag" class="px-3 py-1 bg-slate-100 text-slate-800 font-extrabold text-xs rounded-lg border border-slate-300">MEMUATKAN...</span>
               </div>
             </div>
 
@@ -677,7 +701,7 @@
   </div>
 
   <script>
-    // URL WEB APP GOOGLE APPS SCRIPT BERAKHIR DENGAN /exec
+    // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
     const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzKP-umQNZVBYXR4ZKXPw4DFBpNduFzrymdCnOaBPAfp8H7ysRTEVT0NN9T0wIcoJx1_w/exec";
 
     let currentUser = null;
@@ -699,8 +723,14 @@
       document.getElementById('rekodTarikh').value = now.toISOString().split('T')[0];
       document.getElementById('rekodMasa').value = now.toTimeString().slice(0, 5);
       
-      document.getElementById('reportFilterMonth').value = now.getMonth() + 1;
-      document.getElementById('reportFilterYear').value = now.getFullYear();
+      const currentMonth = now.getMonth() + 1;
+      const currentYear = now.getFullYear();
+
+      document.getElementById('reportFilterMonth').value = currentMonth;
+      document.getElementById('reportFilterYear').value = currentYear;
+
+      document.getElementById('execFilterMonth').value = currentMonth;
+      document.getElementById('execFilterYear').value = currentYear;
     });
 
     async function callBackendApi(action, payload = {}) {
@@ -1208,10 +1238,31 @@
       }
     }
 
-    function renderExecSummary(res) {
+    // FUNGSI KHAS UNTUK MENJANA DATA RINGKASAN EKSEKUTIF BERDASARKAN TAPISAN SENDIRI
+    async function loadExecSummaryData() {
+      toggleLoading(true, "Menjana Ringkasan Eksekutif...");
+      const filters = {
+        bulan: document.getElementById('execFilterMonth').value,
+        tahun: document.getElementById('execFilterYear').value
+      };
+
+      try {
+        const res = await callBackendApi("getReports", { filters: filters });
+        toggleLoading(false);
+        if (res.success) {
+          renderExecSummary(res, filters.bulan, filters.tahun);
+          showToast("Ringkasan Eksekutif berjaya dikemaskini!", "success");
+        }
+      } catch (err) {
+        toggleLoading(false);
+        showToast(err.message, "error");
+      }
+    }
+
+    function renderExecSummary(res, customMonth, customYear) {
       const monthNames = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"];
-      const mVal = document.getElementById('reportFilterMonth').value;
-      const yVal = document.getElementById('reportFilterYear').value;
+      const mVal = customMonth || document.getElementById('execFilterMonth').value;
+      const yVal = customYear || document.getElementById('execFilterYear').value;
 
       document.getElementById('execMonthYearTag').innerText = `${monthNames[mVal - 1].toUpperCase()} ${yVal}`;
       document.getElementById('execTotalRM').innerText = `RM ${res.summary.totalRM}`;
@@ -1422,7 +1473,8 @@
 
       if (viewName === 'hantar') loadHantarCardList();
       if (viewName === 'sejarah') loadDriverHistory();
-      if (viewName === 'laporan' || viewName === 'execSummary') loadReportData();
+      if (viewName === 'laporan') loadReportData();
+      if (viewName === 'execSummary') loadExecSummaryData();
 
       if (window.innerWidth < 768) {
         document.getElementById("sidebarNav").classList.add("-translate-x-full");
