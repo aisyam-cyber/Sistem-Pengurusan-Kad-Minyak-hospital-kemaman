@@ -314,7 +314,7 @@
           </div>
         </div>
 
-        <!-- REKOD MINYAK -->
+        <!-- REKOD MINYAK DENGAN STEP="ANY" UNTUK NILAI PERPULUHAN SEBENAR -->
         <div id="view-rekod" class="view-panel hidden max-w-xl mx-auto">
           <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
             <h3 class="font-extrabold text-base mb-6 text-slate-800 flex items-center gap-2 border-b pb-3">
@@ -371,7 +371,7 @@
                 </div>
                 <div>
                   <label class="block font-bold text-slate-600 mb-1.5 uppercase">Harga / Liter (RM) *</label>
-                  <input type="number" step="0.01" id="rekodHarga" oninput="calcTotalRM()" required placeholder="2.05" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                  <input type="number" step="any" id="rekodHarga" oninput="calcTotalRM()" required placeholder="2.05" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none">
                 </div>
                 <div>
                   <label class="block font-bold text-slate-600 mb-1.5 uppercase">Jumlah (RM)</label>
@@ -575,7 +575,7 @@
           </div>
         </div>
 
-        <!-- RINGKASAN EKSEKUTIF BULANAN (AMBULANS vs JABATAN vs LOANER) -->
+        <!-- RINGKASAN EKSEKUTIF BULANAN DENGAN 3 KAD PECAHAN TERASING -->
         <div id="view-execSummary" class="view-panel hidden max-w-4xl mx-auto space-y-6">
           
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
@@ -612,7 +612,6 @@
             </div>
           </div>
 
-          <!-- DOKUMEN CETAK A4 RINGKASAN EKSEKUTIF -->
           <div id="printableExecSummary" class="bg-white p-8 rounded-3xl shadow-lg border border-slate-200 space-y-6 text-slate-800">
             <div class="border-b-2 border-slate-900 pb-4 flex justify-between items-end">
               <div>
@@ -624,7 +623,6 @@
               </div>
             </div>
 
-            <!-- CARD KPIS RINGKASAN UTAMA -->
             <div class="grid grid-cols-3 gap-4">
               <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
                 <span class="text-[10px] font-extrabold text-slate-400 uppercase">JUMLAH KOS MINYAK</span>
@@ -751,6 +749,7 @@
             <div class="p-4 bg-indigo-50/60 border border-indigo-200 rounded-2xl space-y-1.5 text-xs text-indigo-950">
               <h4 class="font-extrabold uppercase text-[11px] text-indigo-900">IMPLIKASI TADBIR URUS & KAWALAN DIGITAL</h4>
               <ul class="list-disc list-inside space-y-1 text-[11px] font-medium text-slate-700">
+                <li><b>Integriti Kad Fizikal Unik</b>: Membaca lajur NO_KAD_PENUH bagi memastikan kad master gantian hanya dikira 1 unit fizikal walaupun dikongsi jenis kenderaan.</li>
                 <li><b>Analisa Terasing Harian</b>: Menyediakan data purata RM & liter khusus bagi Ambulans Hospital, Kenderaan Jabatan, dan Loaner Radicare secara berasingan.</li>
                 <li><b>Penyimpanan Resit Drive Automatik</b>: Gambar resit dimuat naik pemandu disimpan terus ke Google Drive bagi menyokong audit tanpa kertas.</li>
                 <li><b>Kawalan Odometer & Bypass Loaner</b>: Sistem menyemak ralat bacaan odometer pemandu dan memberi kefleksibelan kawalan bypass untuk kenderaan gantian Radicare.</li>
@@ -781,7 +780,7 @@
 
   <script>
     // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzGMIMfsaZ9fI4GjV-E57dJPpeC_FOTwmKzED96h7wznjcxc62gWYnS8x8NbfwMSrmqkA/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbz2oPurHDLrRxtVE8swo1-djFpNWXYdGHPswBBNyG7353AXj2Rp3Dt1hpUOLVe8qldL/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -1337,7 +1336,6 @@
       }
     }
 
-    // FUNGSI RENDER RINGKASAN EKSEKUTIF (AMBULANS, JABATAN & LOANER)
     function renderExecSummary(res, customMonth, customYear) {
       const monthNames = ["Januari", "Februari", "Mac", "April", "Mei", "Jun", "Julai", "Ogos", "September", "Oktober", "November", "Disember"];
       const mVal = customMonth || document.getElementById('execFilterMonth').value;
@@ -1351,7 +1349,6 @@
       const days = res.summary.daysInMonth || 30;
       document.getElementById('execDaysInMonthNotice').innerText = `berdasarkan ${days} hari operasi`;
 
-      // 1. Ambulans Hospital
       if (res.summary.ambulans) {
         document.getElementById('execAmbTxBadge').innerText = `${res.summary.ambulans.totalTx} Isian`;
         document.getElementById('execAmbDailyLiter').innerText = `${res.summary.ambulans.avgLiterDaily} L`;
@@ -1360,7 +1357,6 @@
         document.getElementById('execAmbTotalRMSub').innerText = `Jumlah: RM ${res.summary.ambulans.totalRM}`;
       }
 
-      // 2. Kenderaan Jabatan Hospital
       if (res.summary.jabatan) {
         document.getElementById('execJabTxBadge').innerText = `${res.summary.jabatan.totalTx} Isian`;
         document.getElementById('execJabDailyLiter').innerText = `${res.summary.jabatan.avgLiterDaily} L`;
@@ -1369,7 +1365,6 @@
         document.getElementById('execJabTotalRMSub').innerText = `Jumlah: RM ${res.summary.jabatan.totalRM}`;
       }
 
-      // 3. Kenderaan Loaner Radicare
       if (res.summary.loaner) {
         document.getElementById('execLoanerTxBadge').innerText = `${res.summary.loaner.totalTx} Isian`;
         document.getElementById('execLoanerDailyLiter').innerText = `${res.summary.loaner.avgLiterDaily} L`;
