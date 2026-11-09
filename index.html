@@ -780,7 +780,7 @@
 
   <script>
     // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzxhgPsFzEmoXUHKG6quVdrb4SmgQWJjgPhkKhbA-TkYAonRmBk6WOx4cb7MNok0kPqhw/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzHBOn3AACjHSOYVS5Z1TLBW3X8l-UggsrQA0GQqqMcwOZ-rcQ_1LsdhlhJq1yRlCeRyA/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -974,7 +974,7 @@
       loanerGroup.classList.toggle("hidden", !isLoaner);
       document.getElementById("ambilNoPlatLoaner").required = isLoaner;
 
-      // Kumpulkan kad yang sedang aktif digunakan di pangkalan data
+      // Kumpulkan kad fizikal yang sedang aktif digunakan merentas pangkalan data
       const activeUsedCards = new Set();
       masterData.kadMinyak.forEach(k => {
         if (String(k.STATUS_KAD || "").toUpperCase() === "SEDANG DIGUNAKAN") {
