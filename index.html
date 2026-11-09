@@ -314,7 +314,7 @@
           </div>
         </div>
 
-        <!-- REKOD MINYAK DENGAN STEP="ANY" UNTUK NILAI PERPULUHAN SEBENAR -->
+        <!-- REKOD MINYAK DENGAN STEP="ANY" -->
         <div id="view-rekod" class="view-panel hidden max-w-xl mx-auto">
           <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
             <h3 class="font-extrabold text-base mb-6 text-slate-800 flex items-center gap-2 border-b pb-3">
@@ -780,7 +780,7 @@
 
   <script>
     // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbz2oPurHDLrRxtVE8swo1-djFpNWXYdGHPswBBNyG7353AXj2Rp3Dt1hpUOLVe8qldL/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzxhgPsFzEmoXUHKG6quVdrb4SmgQWJjgPhkKhbA-TkYAonRmBk6WOx4cb7MNok0kPqhw/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -954,6 +954,7 @@
       });
     }
 
+    // PENYEMAKAN KAD UNIK DUA HALA UNTUK BORANG AMBIL KAD
     function handleAmbilVehicleChange() {
       const vId = document.getElementById("ambilKenderaan").value;
       const checkboxGroup = document.getElementById("ambilKadCheckboxGroup");
@@ -973,17 +974,33 @@
       loanerGroup.classList.toggle("hidden", !isLoaner);
       document.getElementById("ambilNoPlatLoaner").required = isLoaner;
 
+      // Kumpulkan kad yang sedang aktif digunakan di pangkalan data
+      const activeUsedCards = new Set();
+      masterData.kadMinyak.forEach(k => {
+        if (String(k.STATUS_KAD || "").toUpperCase() === "SEDANG DIGUNAKAN") {
+          const cardKey = String(k.NO_KAD_PENUH || k.NO_KAD || k.NO_KAD_4_DIGIT).trim().toUpperCase();
+          if (cardKey) activeUsedCards.add(cardKey);
+        }
+      });
+
       const matchedCards = masterData.kadMinyak.filter(k => String(k.ID_KENDERAAN).toUpperCase() === String(vId).toUpperCase());
 
       if (matchedCards.length > 0) {
         matchedCards.forEach(kad => {
-          const isUsed = String(kad.STATUS_KAD).toUpperCase() === "SEDANG DIGUNAKAN";
+          const myCardKey = String(kad.NO_KAD_PENUH || kad.NO_KAD || kad.NO_KAD_4_DIGIT).trim().toUpperCase();
+          const isPhysicallyUsed = String(kad.STATUS_KAD).toUpperCase() === "SEDANG DIGUNAKAN" || activeUsedCards.has(myCardKey);
+
           checkboxGroup.innerHTML += `
-            <label class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-100 cursor-pointer ${isUsed ? 'opacity-60 cursor-not-allowed' : ''}">
-              <input type="checkbox" name="ambilKadCheckbox" value="${kad.ID_KAD}" ${isUsed ? 'disabled' : ''} class="w-4 h-4 text-blue-600 rounded">
+            <label class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-100 cursor-pointer ${isPhysicallyUsed ? 'opacity-60 cursor-not-allowed bg-slate-50' : ''}">
+              <input type="checkbox" name="ambilKadCheckbox" value="${kad.ID_KAD}" ${isPhysicallyUsed ? 'disabled' : ''} class="w-4 h-4 text-blue-600 rounded">
               <div class="flex-1 flex items-center justify-between">
-                <span class="font-extrabold text-slate-800 text-xs">No. Kad: ${kad.NO_KAD_4_DIGIT} (${kad.PROVIDER})</span>
-                <span class="text-[10px] font-black px-2.5 py-1 rounded-full ${isUsed ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}">${kad.STATUS_KAD}</span>
+                <div>
+                  <span class="font-extrabold text-slate-800 text-xs block">No. Kad: ${kad.NO_KAD_4_DIGIT} (${kad.PROVIDER})</span>
+                  ${kad.NO_KAD_PENUH ? `<span class="text-[10px] text-slate-400 font-mono block">${kad.NO_KAD_PENUH}</span>` : ''}
+                </div>
+                <span class="text-[10px] font-black px-2.5 py-1 rounded-full ${isPhysicallyUsed ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}">
+                  ${isPhysicallyUsed ? 'SEDANG DIGUNAKAN' : 'DALAM SIMPANAN'}
+                </span>
               </div>
             </label>
           `;
