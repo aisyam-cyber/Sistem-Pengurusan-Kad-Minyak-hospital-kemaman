@@ -434,7 +434,7 @@
           </div>
         </div>
 
-        <!-- LAPORAN & GRAF -->
+        <!-- LAPORAN & GRAF DENGAN PENAPIS NO. PLAT -->
         <div id="view-laporan" class="view-panel hidden space-y-6">
           <div id="printableReportArea" class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 space-y-6">
             
@@ -466,6 +466,9 @@
                   <option value="2025">2025</option>
                   <option value="2026">2026</option>
                   <option value="2027">2027</option>
+                </select>
+                <select id="reportFilterPlat" onchange="loadReportData()" class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold outline-none max-w-[200px]">
+                  <option value="ALL">Semua Kenderaan</option>
                 </select>
                 <button onclick="loadReportData()" class="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition flex items-center gap-1.5">
                   <i class="fa-solid fa-filter"></i> Tapis
@@ -575,7 +578,7 @@
           </div>
         </div>
 
-        <!-- RINGKASAN EKSEKUTIF BULANAN DENGAN PECAHAN HARIAN & PERBANDINGAN KAD -->
+        <!-- RINGKASAN EKSEKUTIF BULANAN -->
         <div id="view-execSummary" class="view-panel hidden max-w-4xl mx-auto space-y-6">
           
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
@@ -790,7 +793,7 @@
 
   <script>
     // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbw4p0xkh-OsxP_8G3GXoPLLJyQjIkSCVkmQcz1Flj9iWFC7lL_BsKjrvQeYwRyYNSQP3g/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzMuZAa7IACu9ERRNqnB8AzWYQkypNo0qBKL_sJh8ZsJEpA-zAj0P19U5z3oVVkRDBKNQ/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -942,10 +945,12 @@
     function populateDropdowns() {
       const ambilVehSelect = document.getElementById("ambilKenderaan");
       const rekodVehSelect = document.getElementById("rekodKenderaan");
+      const reportPlatSelect = document.getElementById("reportFilterPlat");
       const ambilPenyeliaSelect = document.getElementById("ambilPenyelia");
       
       ambilVehSelect.innerHTML = '<option value="">-- Pilih Kenderaan --</option>';
       rekodVehSelect.innerHTML = '<option value="">-- Pilih Kenderaan --</option>';
+      if (reportPlatSelect) reportPlatSelect.innerHTML = '<option value="ALL">Semua Kenderaan</option>';
       ambilPenyeliaSelect.innerHTML = '<option value="">-- Sila Pilih Penyelia/PPP Sahaja --</option>';
 
       masterData.kenderaan.forEach(v => {
@@ -953,6 +958,10 @@
         const opt = `<option value="${v.ID_KENDERAAN}">${v.NO_PENDAFTARAN} - ${v.NAMA_KENDERAAN}${tagServis}</option>`;
         ambilVehSelect.innerHTML += opt;
         rekodVehSelect.innerHTML += opt;
+
+        if (reportPlatSelect) {
+          reportPlatSelect.innerHTML += `<option value="${v.NO_PENDAFTARAN}">${v.NO_PENDAFTARAN} (${v.NAMA_KENDERAAN})</option>`;
+        }
       });
 
       masterData.penyelia.forEach(p => {
@@ -964,7 +973,6 @@
       });
     }
 
-    // PENYEMAKAN KAD UNIK DUA HALA UNTUK BORANG AMBIL KAD
     function handleAmbilVehicleChange() {
       const vId = document.getElementById("ambilKenderaan").value;
       const checkboxGroup = document.getElementById("ambilKadCheckboxGroup");
@@ -1316,9 +1324,11 @@
 
     async function loadReportData() {
       toggleLoading(true, "Membina laporan...");
+      const platVal = document.getElementById('reportFilterPlat') ? document.getElementById('reportFilterPlat').value : "ALL";
       const filters = {
         bulan: document.getElementById('reportFilterMonth').value,
-        tahun: document.getElementById('reportFilterYear').value
+        tahun: document.getElementById('reportFilterYear').value,
+        noPlat: platVal
       };
 
       try {
@@ -1334,7 +1344,9 @@
           currentReportPage = 1;
           renderPaginatedReport();
 
-          renderExecSummary(res);
+          if (platVal === "ALL") {
+            renderExecSummary(res);
+          }
         }
       } catch (err) {
         toggleLoading(false);
@@ -1399,7 +1411,6 @@
         document.getElementById('execLoanerTotalRMSub').innerText = `Jumlah: RM ${res.summary.loaner.totalRM}`;
       }
 
-      // PAPARAN PERBANDINGAN KOS MENGIKUT SYARIKAT KAD (PETRONAS, PETRON, SHELL)
       const providerGrid = document.getElementById('execProviderGrid');
       if (providerGrid && res.summary.providers) {
         providerGrid.innerHTML = res.summary.providers.map(p => {
@@ -1495,13 +1506,14 @@
 
     function exportToCSV() {
       if (!fullReportData || fullReportData.length === 0) return showToast("Tiada data.", "warning");
+      const platTag = document.getElementById('reportFilterPlat') ? document.getElementById('reportFilterPlat').value.replace(/\s+/g, "_") : "ALL";
       let csvContent = "data:text/csv;charset=utf-8,ID,Tarikh,Masa,Pemandu,Plat,Kad,Provider,Stesen,Odometer,Liter,Jumlah RM,Tujuan\n";
       fullReportData.forEach(r => {
         csvContent += [r.ID_TRANSAKSI, r.TARIKH_ISI, r.MASA_ISI, `"${r.NAMA_PEMANDU}"`, r.NO_PENDAFTARAN, r.NO_KAD_4_DIGIT, r.PROVIDER, `"${r.NAMA_STESEN}"`, r.ODOMETER, r.LITER, r.JUMLAH_RM, `"${r.TUJUAN || '-'}"`].join(",") + "\n";
       });
       const link = document.createElement("a");
       link.setAttribute("href", encodeURI(csvContent));
-      link.setAttribute("download", `Laporan_Minyak_${document.getElementById('reportFilterMonth').value}_${document.getElementById('reportFilterYear').value}.csv`);
+      link.setAttribute("download", `Laporan_Minyak_${platTag}_${document.getElementById('reportFilterMonth').value}_${document.getElementById('reportFilterYear').value}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
