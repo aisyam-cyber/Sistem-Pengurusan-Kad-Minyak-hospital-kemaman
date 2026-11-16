@@ -575,7 +575,7 @@
           </div>
         </div>
 
-        <!-- RINGKASAN EKSEKUTIF BULANAN DENGAN 3 KAD PECAHAN TERASING -->
+        <!-- RINGKASAN EKSEKUTIF BULANAN DENGAN PECAHAN HARIAN & PERBANDINGAN KAD -->
         <div id="view-execSummary" class="view-panel hidden max-w-4xl mx-auto space-y-6">
           
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
@@ -638,7 +638,7 @@
               </div>
             </div>
 
-            <!-- ANALISA PURATA HARIAN TERASING: 3 KATEGORI -->
+            <!-- 1. ANALISA PURATA HARIAN TERASING: 3 KATEGORI -->
             <div class="space-y-3">
               <h3 class="text-xs font-black uppercase text-slate-900 tracking-wider flex items-center justify-between border-b pb-1">
                 <span class="flex items-center gap-2"><i class="fa-solid fa-chart-pie text-indigo-600"></i> ANALISA PURATA HARIAN (AMBULANS VS JABATAN VS LOANER)</span>
@@ -647,7 +647,7 @@
               
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 
-                <!-- 1. AMBULANS HOSPITAL -->
+                <!-- AMBULANS HOSPITAL -->
                 <div class="p-3.5 rounded-2xl border border-red-200 bg-red-50/40 space-y-2">
                   <div class="flex items-center justify-between border-b border-red-200/60 pb-1.5">
                     <span class="font-black text-[11px] text-red-900 flex items-center gap-1.5 uppercase">
@@ -669,7 +669,7 @@
                   </div>
                 </div>
 
-                <!-- 2. KENDERAAN JABATAN -->
+                <!-- KENDERAAN JABATAN -->
                 <div class="p-3.5 rounded-2xl border border-blue-200 bg-blue-50/40 space-y-2">
                   <div class="flex items-center justify-between border-b border-blue-200/60 pb-1.5">
                     <span class="font-black text-[11px] text-blue-900 flex items-center gap-1.5 uppercase">
@@ -691,7 +691,7 @@
                   </div>
                 </div>
 
-                <!-- 3. LOANER RADICARE -->
+                <!-- LOANER RADICARE -->
                 <div class="p-3.5 rounded-2xl border border-amber-300 bg-amber-50/50 space-y-2">
                   <div class="flex items-center justify-between border-b border-amber-200 pb-1.5">
                     <span class="font-black text-[11px] text-amber-900 flex items-center gap-1.5 uppercase">
@@ -716,7 +716,17 @@
               </div>
             </div>
 
-            <!-- STATUS KECEKAPAN ARMADA -->
+            <!-- 2. PERBANDINGAN KOS MENGIKUT SYARIKAT KAD (PETRONAS, PETRON, SHELL) -->
+            <div class="space-y-3">
+              <h3 class="text-xs font-black uppercase text-slate-900 tracking-wider flex items-center gap-2 border-b pb-1">
+                <i class="fa-solid fa-credit-card text-indigo-600"></i> PERBANDINGAN KOS BAHAN API MENGIKUT SYARIKAT KAD
+              </h3>
+              <div id="execProviderGrid" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <!-- Dijana secara automatik oleh JS -->
+              </div>
+            </div>
+
+            <!-- 3. STATUS KECEKAPAN ARMADA -->
             <div class="space-y-3">
               <h3 class="text-xs font-black uppercase text-slate-900 tracking-wider flex items-center gap-2 border-b pb-1">
                 <i class="fa-solid fa-gauge-high text-indigo-600"></i> STATUS KECEKAPAN ARMADA KENDERAAN
@@ -750,9 +760,9 @@
               <h4 class="font-extrabold uppercase text-[11px] text-indigo-900">IMPLIKASI TADBIR URUS & KAWALAN DIGITAL</h4>
               <ul class="list-disc list-inside space-y-1 text-[11px] font-medium text-slate-700">
                 <li><b>Integriti Kad Fizikal Unik</b>: Membaca lajur NO_KAD_PENUH bagi memastikan kad master gantian hanya dikira 1 unit fizikal walaupun dikongsi jenis kenderaan.</li>
+                <li><b>Perbandingan Kos Vendor Kad</b>: Memudahkan pengesahan penyata invois bulanan syarikat pembekal (Petronas, Petron, dan Shell) secara telus.</li>
                 <li><b>Analisa Terasing Harian</b>: Menyediakan data purata RM & liter khusus bagi Ambulans Hospital, Kenderaan Jabatan, dan Loaner Radicare secara berasingan.</li>
                 <li><b>Penyimpanan Resit Drive Automatik</b>: Gambar resit dimuat naik pemandu disimpan terus ke Google Drive bagi menyokong audit tanpa kertas.</li>
-                <li><b>Kawalan Odometer & Bypass Loaner</b>: Sistem menyemak ralat bacaan odometer pemandu dan memberi kefleksibelan kawalan bypass untuk kenderaan gantian Radicare.</li>
               </ul>
             </div>
 
@@ -780,7 +790,7 @@
 
   <script>
     // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzHBOn3AACjHSOYVS5Z1TLBW3X8l-UggsrQA0GQqqMcwOZ-rcQ_1LsdhlhJq1yRlCeRyA/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbw4p0xkh-OsxP_8G3GXoPLLJyQjIkSCVkmQcz1Flj9iWFC7lL_BsKjrvQeYwRyYNSQP3g/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -974,7 +984,6 @@
       loanerGroup.classList.toggle("hidden", !isLoaner);
       document.getElementById("ambilNoPlatLoaner").required = isLoaner;
 
-      // Kumpulkan kad fizikal yang sedang aktif digunakan merentas pangkalan data
       const activeUsedCards = new Set();
       masterData.kadMinyak.forEach(k => {
         if (String(k.STATUS_KAD || "").toUpperCase() === "SEDANG DIGUNAKAN") {
@@ -1388,6 +1397,52 @@
         document.getElementById('execLoanerDailyRM').innerText = `RM ${res.summary.loaner.avgRMDaily}`;
         document.getElementById('execLoanerTotalLiterSub').innerText = `Jumlah: ${res.summary.loaner.totalLiter} L`;
         document.getElementById('execLoanerTotalRMSub').innerText = `Jumlah: RM ${res.summary.loaner.totalRM}`;
+      }
+
+      // PAPARAN PERBANDINGAN KOS MENGIKUT SYARIKAT KAD (PETRONAS, PETRON, SHELL)
+      const providerGrid = document.getElementById('execProviderGrid');
+      if (providerGrid && res.summary.providers) {
+        providerGrid.innerHTML = res.summary.providers.map(p => {
+          let themeClass = "border-slate-200 bg-slate-50 text-slate-800";
+          let badgeClass = "bg-slate-200 text-slate-800";
+          let amountClass = "text-slate-900";
+          let iconColor = "text-slate-600";
+
+          if (p.provider === "PETRONAS") {
+            themeClass = "border-teal-200 bg-teal-50/50";
+            badgeClass = "bg-teal-100 text-teal-800 border border-teal-200";
+            amountClass = "text-teal-700";
+            iconColor = "text-teal-600";
+          } else if (p.provider === "PETRON") {
+            themeClass = "border-blue-200 bg-blue-50/50";
+            badgeClass = "bg-blue-100 text-blue-800 border border-blue-200";
+            amountClass = "text-blue-700";
+            iconColor = "text-blue-600";
+          } else if (p.provider === "SHELL") {
+            themeClass = "border-amber-300 bg-amber-50/50";
+            badgeClass = "bg-amber-100 text-amber-900 border border-amber-300";
+            amountClass = "text-red-600";
+            iconColor = "text-amber-600";
+          }
+
+          return `
+            <div class="p-3.5 rounded-2xl border ${themeClass} flex flex-col justify-between space-y-2">
+              <div class="flex items-center justify-between border-b border-black/5 pb-1.5">
+                <span class="font-black text-xs uppercase flex items-center gap-1.5 text-slate-800">
+                  <i class="fa-solid fa-gas-pump ${iconColor}"></i> ${p.provider}
+                </span>
+                <span class="text-[9px] font-extrabold px-2 py-0.5 rounded-full ${badgeClass}">${p.percentage}%</span>
+              </div>
+              <div>
+                <h4 class="text-xl font-black ${amountClass}">RM ${p.totalRM}</h4>
+                <div class="flex items-center justify-between text-[10px] font-bold text-slate-500 mt-1">
+                  <span>Isipadu: <b class="text-slate-700">${p.totalLiter} L</b></span>
+                  <span>${p.totalTx} Transaksi</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
       }
 
       let countCekap = 0, countSederhana = 0, countTidakCekap = 0;
