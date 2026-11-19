@@ -314,7 +314,7 @@
           </div>
         </div>
 
-        <!-- REKOD MINYAK DENGAN STEP="ANY" -->
+        <!-- REKOD MINYAK DENGAN PANDUAN JELAS ODOMETER DI PAM STESEN -->
         <div id="view-rekod" class="view-panel hidden max-w-xl mx-auto">
           <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
             <h3 class="font-extrabold text-base mb-6 text-slate-800 flex items-center gap-2 border-b pb-3">
@@ -359,9 +359,16 @@
                 </div>
               </div>
 
-              <div>
-                <label class="block font-bold text-slate-600 mb-1.5 uppercase">Odometer Semasa *</label>
-                <input type="number" id="rekodOdometer" required placeholder="125150" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium outline-none">
+              <div class="p-3.5 bg-blue-50/70 border border-blue-200 rounded-2xl space-y-2">
+                <div class="flex items-center justify-between">
+                  <label class="block font-extrabold text-blue-950 uppercase">Odometer Semasa Di Stesen Minyak (KM) *</label>
+                  <span id="rekodLastOdoHint" class="text-[10px] font-black px-2 py-0.5 bg-blue-100 text-blue-800 rounded-lg hidden">Rekod Terakhir: - KM</span>
+                </div>
+                <input type="number" id="rekodOdometer" required placeholder="Contoh: 125150" class="w-full p-3 bg-white border border-blue-300 rounded-xl font-bold outline-none focus:ring-2 focus:ring-blue-500">
+                <p class="text-[10px] font-semibold text-blue-800 leading-relaxed flex items-start gap-1.5">
+                  <i class="fa-solid fa-circle-info text-blue-600 mt-0.5"></i>
+                  <span>Sila masukkan bacaan meter (KM) <b>tepat semasa berada di pam stesen minyak</b> (Shell/Petron/Petronas), <b>BUKAN</b> bacaan semasa tiba di hospital.</span>
+                </p>
               </div>
 
               <div class="grid grid-cols-3 gap-3">
@@ -793,7 +800,7 @@
 
   <script>
     // GANTIKAN DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA BERAKHIR DENGAN /exec
-    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzMuZAa7IACu9ERRNqnB8AzWYQkypNo0qBKL_sJh8ZsJEpA-zAj0P19U5z3oVVkRDBKNQ/exec";
+    const API_URL = "https://script.google.com/a/macros/moh.gov.my/s/AKfycbzndNkPeI12NHiwgx8-4mhwY6Yg6NdyBVaKFMfsV5o3UPVtq8ZVYTe9GVA2jiF_H8coTQ/exec";
 
     let currentUser = null;
     let masterData = { kenderaan: [], kadMinyak: [], provider: [], penyelia: [], outstandingCards: [], serviceAlerts: [] };
@@ -1031,11 +1038,13 @@
       const vId = document.getElementById("rekodKenderaan").value;
       const kadSelect = document.getElementById("rekodKadId");
       const loanerGroup = document.getElementById("rekodLoanerPlatGroup");
+      const odoHint = document.getElementById("rekodLastOdoHint");
 
       kadSelect.innerHTML = '<option value="">-- Pilih Kad Minyak --</option>';
 
       if (!vId) {
         loanerGroup.classList.add("hidden");
+        if (odoHint) odoHint.classList.add("hidden");
         return;
       }
 
@@ -1044,6 +1053,15 @@
 
       loanerGroup.classList.toggle("hidden", !isLoaner);
       document.getElementById("rekodNoPlatLoaner").required = isLoaner;
+
+      if (odoHint) {
+        if (vehicle && vehicle.latestOdo > 0) {
+          odoHint.innerText = `Rekod Terakhir: ${vehicle.latestOdo} KM`;
+          odoHint.classList.remove("hidden");
+        } else {
+          odoHint.classList.add("hidden");
+        }
+      }
 
       const matchedCards = masterData.kadMinyak.filter(k => String(k.ID_KENDERAAN).toUpperCase() === String(vId).toUpperCase());
       matchedCards.forEach(kad => {
@@ -1150,6 +1168,7 @@
       document.getElementById("odoModal").classList.add("hidden");
       if (confirmed && pendingOdoPayload) {
         if (currentOdoCallbackType === "REKOD") submitRekodMinyak(null, true);
+        else if (currentOdoCallbackType === "HANTAR") submitHantarKadBatch(null, true);
       } else {
         pendingOdoPayload = null;
       }
@@ -1197,8 +1216,9 @@
                   <select id="hantarPenyeliaBatch" required class="w-full p-3 bg-slate-50 border rounded-xl text-xs font-medium">${penyeliaOptions}</select>
                 </div>
                 <div>
-                  <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Odometer Pemulangan *</label>
-                  <input type="number" id="hantarOdoBatch" required placeholder="Contoh: 125500" class="w-full p-3 bg-slate-50 border rounded-xl text-xs font-medium">
+                  <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Odometer Pulang Ke Hospital (KM) *</label>
+                  <input type="number" id="hantarOdoBatch" required placeholder="Contoh: 125500" class="w-full p-3 bg-slate-50 border rounded-xl text-xs font-bold">
+                  <span class="text-[10px] text-amber-700 font-semibold block mt-1">* Mestilah sama atau lebih tinggi daripada bacaan di stesen minyak.</span>
                 </div>
               </div>
 
@@ -1212,7 +1232,7 @@
 
               <div>
                 <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Catatan Pemulangan</label>
-                <input type="text" id="hantarCatatanBatch" placeholder="Tugas selesai / Selesai perjalanan" class="w-full p-3 bg-slate-50 border rounded-xl text-xs">
+                <input type="text" id="hantarCatatanBatch" placeholder="Contoh: Tugas selesai / Tiada pengisian minyak (jarak dekat)" class="w-full p-3 bg-slate-50 border rounded-xl text-xs">
               </div>
 
               <button type="submit" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition">PULANGKAN KAD & SIMPAN ALL RESIT</button>
@@ -1226,41 +1246,58 @@
       }
     }
 
-    async function submitHantarKadBatch(e) {
-      e.preventDefault();
+    async function submitHantarKadBatch(e, bypassOdo = false) {
+      if (e) e.preventDefault();
 
-      const checkedBoxes = document.querySelectorAll('input[name="hantarKadCheckbox"]:checked');
-      const selectedKadIds = Array.from(checkedBoxes).map(cb => cb.value);
+      let payload;
+      if (bypassOdo && pendingOdoPayload) {
+        payload = pendingOdoPayload;
+        payload.bypassOdoWarning = true;
+      } else {
+        const checkedBoxes = document.querySelectorAll('input[name="hantarKadCheckbox"]:checked');
+        const selectedKadIds = Array.from(checkedBoxes).map(cb => cb.value);
 
-      const fileInput = document.getElementById("hantarResitFiles");
-      let resitList = [];
-
-      if (fileInput && fileInput.files.length > 0) {
-        for (let i = 0; i < fileInput.files.length; i++) {
-          const file = fileInput.files[i];
-          if (file.size > 8 * 1024 * 1024) {
-            return showToast(`Gambar "${file.name}" terlalu besar! Sila guna gambar di bawah 8MB.`, "warning");
-          }
-          const base64Str = await convertFileToBase64(file);
-          resitList.push({ base64: base64Str, fileName: file.name });
+        if (selectedKadIds.length === 0) {
+          return showToast("Sila tanda sekurang-kurangnya SATU kad untuk dipulangkan.", "warning");
         }
+
+        const fileInput = document.getElementById("hantarResitFiles");
+        let resitList = [];
+
+        if (fileInput && fileInput.files.length > 0) {
+          for (let i = 0; i < fileInput.files.length; i++) {
+            const file = fileInput.files[i];
+            if (file.size > 8 * 1024 * 1024) {
+              return showToast(`Gambar "${file.name}" terlalu besar! Sila guna gambar di bawah 8MB.`, "warning");
+            }
+            const base64Str = await convertFileToBase64(file);
+            resitList.push({ base64: base64Str, fileName: file.name });
+          }
+        }
+
+        payload = {
+          idPemandu: currentUser.idPemandu,
+          selectedKadIds: selectedKadIds,
+          idPenyelia: document.getElementById('hantarPenyeliaBatch').value,
+          odometer: document.getElementById('hantarOdoBatch').value,
+          catatan: document.getElementById('hantarCatatanBatch').value,
+          resitList: resitList,
+          bypassOdoWarning: false
+        };
       }
 
-      const payload = {
-        idPemandu: currentUser.idPemandu,
-        selectedKadIds: selectedKadIds,
-        idPenyelia: document.getElementById('hantarPenyeliaBatch').value,
-        odometer: document.getElementById('hantarOdoBatch').value,
-        catatan: document.getElementById('hantarCatatanBatch').value,
-        resitList: resitList
-      };
-
-      toggleLoading(true, `Memproses pemulangan & muat naik ${resitList.length} resit...`);
+      toggleLoading(true, `Memproses pemulangan & muat naik ${payload.resitList.length} resit...`);
 
       try {
         const res = await callBackendApi("hantarKadBatch", payload);
         toggleLoading(false);
-        if (res.success) {
+
+        if (res.warningOdo && !bypassOdo) {
+          pendingOdoPayload = payload;
+          currentOdoCallbackType = "HANTAR";
+          openOdoModal(res.message);
+        } else if (res.success) {
+          pendingOdoPayload = null;
           showToast(res.message, "success");
           loadHantarCardList();
           loadInitialAppData();
